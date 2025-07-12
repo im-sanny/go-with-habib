@@ -17,6 +17,6 @@ func main() {
 
 	c := "hello"
 	c = "Hello world!"
-	
+
 	fmt.Println(a, b, c)
 }
