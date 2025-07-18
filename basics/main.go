@@ -23,6 +23,12 @@ func legalAge() {
 	}
 }
 
+func add(num1 int, num2 int) {
+	sum := num1 + num2
+
+	fmt.Println(sum)
+}
+
 func main() {
 	/* int, string, bool, float */
 	a := 1
@@ -36,4 +42,5 @@ func main() {
 
 	fmt.Println(a, b, c)
 	legalAge()
+	add(1, 2)
 }
