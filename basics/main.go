@@ -23,10 +23,17 @@ func legalAge() {
 	}
 }
 
-func add(num1 int, num2 int) {
+func add(num1 int, num2 int) int {
 	sum := num1 + num2
 
-	fmt.Println(sum)
+	return sum
+}
+
+func getTotal(num1 int, num2 int) (int, int) {
+	sum := num1 + num2
+	mul := num1 * num2
+
+	return sum, mul
 }
 
 func main() {
@@ -40,7 +47,11 @@ func main() {
 	c := "hello"
 	c = "Hello world!"
 
-	fmt.Println(a, b, c)
+	sum := add(1, 2)
+	p, q := getTotal(20, 300)
+
 	legalAge()
-	add(1, 2)
+	fmt.Println(a, b, c)
+	fmt.Println(sum)
+	fmt.Println(p, q)
 }
