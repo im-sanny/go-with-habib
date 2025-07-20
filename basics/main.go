@@ -36,6 +36,10 @@ func getTotal(num1 int, num2 int) (int, int) {
 	return sum, mul
 }
 
+func sayHello(name string) {
+	fmt.Println("Welcome to the course ", name)
+}
+
 func main() {
 	/* int, string, bool, float */
 	a := 1
@@ -50,6 +54,7 @@ func main() {
 	sum := add(1, 2)
 	p, q := getTotal(20, 300)
 
+	sayHello("Sun")
 	legalAge()
 	fmt.Println(a, b, c)
 	fmt.Println(sum)
