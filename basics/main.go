@@ -2,61 +2,58 @@ package main
 
 import "fmt"
 
+// Check if age is eligible for marriage
 func legalAge() {
 	age := 20
 
 	if age >= 18 {
-		fmt.Println("Your're eligible to marriage!")
-	} else if age < 18 {
-		fmt.Println("You're not eligible for marriage!")
+		fmt.Println("You're eligible for marriage!")
 	} else {
-		fmt.Println("Grow up kiddo!")
+		fmt.Println("You're not eligible for marriage!")
 	}
 
 	switch {
 	case age == 15 || age == 16:
 		fmt.Println("Invalid")
-	case age == 20 || age >= 18:
-		fmt.Println("valid")
+	case age >= 18:
+		fmt.Println("Valid")
 	default:
 		fmt.Println("Bruh!")
 	}
 }
 
-func add(num1 int, num2 int) int {
-	sum := num1 + num2
-
-	return sum
+// Adds two numbers and returns the result
+func add(num1, num2 int) int {
+	return num1 + num2
 }
 
-func getTotal(num1 int, num2 int) (int, int) {
-	sum := num1 + num2
-	mul := num1 * num2
-
-	return sum, mul
+// Returns both sum and product of two numbers
+func getTotal(num1, num2 int) (sum, mul int) {
+	sum = num1 + num2
+	mul = num1 * num2
+	return
 }
 
+// Prints a welcome message
 func sayHello(name string) {
-	fmt.Println("Welcome to the course ", name)
+	fmt.Println("Welcome to the course,", name)
 }
 
 func main() {
-	/* int, string, bool, float */
-	a := 1
-	a = 2
+	// Variable declarations
+	a := 2
+	b := false
+	c := "Hello world!"
 
-	b := true
-	b = false
-
-	c := "hello"
-	c = "Hello world!"
-
+	// Function usage
 	sum := add(1, 2)
-	p, q := getTotal(20, 300)
+	total, product := getTotal(20, 300)
 
 	sayHello("Sun")
 	legalAge()
+
+	// Output results
 	fmt.Println(a, b, c)
 	fmt.Println(sum)
-	fmt.Println(p, q)
+	fmt.Println(total, product)
 }
