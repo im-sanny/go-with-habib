@@ -33,10 +33,15 @@ func display(name string, sum int) {
 	fmt.Println("total ", sum)
 }
 
+func bye() {
+	fmt.Println("good bye")
+}
+
 func main() {
 	welcomeMessage()
 	name := getUsername()
 	num1, num2 := getNumber()
 	sum := add(num1, num2)
 	display(name, sum)
+	bye()
 }
