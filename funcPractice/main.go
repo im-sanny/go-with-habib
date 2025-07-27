@@ -34,7 +34,7 @@ func display(name string, sum int) {
 }
 
 func goodBye() {
-	fmt.Println("Thanks for using the application!")
+	fmt.Println("Thanks you!")
 }
 
 func main() {
