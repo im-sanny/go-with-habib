@@ -82,4 +82,26 @@ math -> logic (discrete mathematics)
 1. first order logic
 2. higher order logic
 
+### logic ###
+
+1. Object (people, animal, car etc)
+2. Property (color, student)
+3. Relation
+
+Tom is a student.
+Apple is red.
+Tom is taller than Jerry.
+
+Statement
+
+## First order logic:
+
+Rule: All customers must pay their pizza bills.
+			All students must wear their uniforms.
+
+## Higher order logic:
+			Any rule that applies to all customers must also apply to Tom
+
+			a rule: no customers should give tips for the service
+
 */
