@@ -13,3 +13,5 @@ func main() {
 	}
 	fmt.Println(a)
 }
+
+//variable shadowing happens when a local scope variable name match's with any outer scope variable
