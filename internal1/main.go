@@ -20,13 +20,18 @@ func init() {
 }
 
 /*
-	Code segment: all the functions goes to the code segment after compile. it stores things that has no chance to change later like: functions, const variables.
-	Data segment: everything in global memory goes to the data segment or data segment keeps everything global.
-	Stack: local variable used inside a function stored in stack, and for every function call there creates a new stack frame.
-	The stack is a memory area that temporarily stores data for currently executing functions, including their local variables and call information.
-	Heap:
-	GC: it manages heap
+	1. Code segment: all the functions goes to the code segment after compile. it stores things that has no chance to change later like: functions, const variables.
 
-	stack frame: in stack a function takes some space and that space is called that functions stack frame
+	2. Data segment: everything in global memory goes to the data segment or data segment keeps everything that is global.
+
+	3. Stack: local variable used inside a function stored in stack, and for every function call there creates a new stack frame.
+	The stack is a memory area that temporarily stores data for currently executing functions, including their local variables and call information.
+
+	4. Stack frame: in stack a function takes some space and that space is called that functions stack frame
+
+	5. Heap: used for dynamic memory allocation.
+
+	6. GC: it manages heap, automatically removes unused or unnecessary memory from heap
+	
 	compiler reads all the code at first before executing
 */
