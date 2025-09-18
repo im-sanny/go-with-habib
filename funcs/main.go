@@ -88,8 +88,10 @@ Notes:
 
 9. first order func: those who works with things like number, boolean, string are first order func.
 10. higher order func: if a function receives a function as a parameter or return it or does both then it's a higher order function.
-11. callback function: the function we pass through higher order functions are callback function
-12. first class citizen => the data we assign in a variable are the first class citizen
+11. callback function: the function we pass through higher order functions are callback function or a function that we send through a func and later call it is callback func
+12. first class citizen => In Go, functions are first-class citizens, meaning they can be stored in variables, passed as arguments, and returned from other functions just like regular values.
+or 👉 “If you can store it, pass it, and return it — it’s a first-class citizen.” ✅
+In Go → functions fit this rule.
 
 for a function to be higher order function it must have one of the following rules in them:
 	1. take function as parameter
@@ -102,8 +104,8 @@ functional paradigm -> haskell, racket
 
 math -> logic (discrete mathematics)
 
-1. first order logic
-2. higher order logic
+1. first order logic: works object property relation
+2. higher order logic: works with rules
 
 ### logic ###
 
