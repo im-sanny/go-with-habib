@@ -35,7 +35,7 @@ func init() {
 		************** Compile phase ***************
 
 		** Code segment **
-		Code segment: compiled function and constant stay stored here as a part of executable instruction, code segment is read only.
+		Code segment: compiled function and const stored here as a part of executable instruction, code segment is read only.
 		Data segment: all the global variable stays here.
 		Function expression: at runtime this counts as object and stored in code segment.
 
