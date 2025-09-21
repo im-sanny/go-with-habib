@@ -38,20 +38,31 @@ func init() {
 }
 
 /*
-Closure: closure is an function who can create access and remember variable outside it's own scope.
-
-A closure is a function that remembers and can access variables from its outer scope, even after the outer function has finished executing.
+Closure: A closure is a function that can access and remembers variables outside its own scope, even after that scope has finished executing.
 
 2 Phases:
-	1. compilation phase
-	2. execution phase
+	1. compilation phase(compile time)
+	2. execution phase(run time)
 
 	*** Code Segment ***
-
 	a = 10
 	outer = func(){...}
 	call = func(){...}
 	main = func(){...}
 	init = func(){...}
+
+
+
+	go run main.go => compile it => main => ./main
+	go build main.go => compile it = main
+
+	./main
+
+	Escape Analysis: If a variable needs to outlive its own function and needed to use later then Go compiler sends it to heap, this is called escape analysis.
+
+		Escape analysis is the process where the Go compiler determines if a variable must outlive the scope (usually the function) in which it was created. If it does, the variable 'escapes' to the heap; otherwise, it can be efficiently allocated on the stack.
+
+	# stack can be clean automatically but GC cleans heap.
+
 
 */
