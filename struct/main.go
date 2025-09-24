@@ -3,12 +3,12 @@ package main
 import "fmt"
 
 type User struct { // struct definition
-	Name string			 // member variable or property
+	Name string // member variable or property
 	Age  int
 }
 
 func person() {
-	user1 := User{ 	// instance of User type
+	user1 := User{ // instance of User type
 		Name: "Sun",
 		Age:  69,
 	}
@@ -33,8 +33,12 @@ func main() {
 /*
 Struct: In Go, structs are used to define new types that contain multiple fields.
 
-Instance: When I create a value of a custom type in Go, it's called a value or instance. Some also called it object but that's least preferable.
+Instance: When I create a value of a custom type in Go, it's called a value or instance. Some also call it object but that's least preferable.
 
 Instantiate: process of making instance called instantiate.
+
+Access: Struct fields are accessed using the dot . operator.
+
+Export rules: Fields starting with uppercase letters are exported (public), lowercase means unexported (private to the package).
 
 */
