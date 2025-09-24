@@ -48,6 +48,7 @@ Closure: A closure is a function that can access and remembers variables outside
 	a = 10
 	outer = func(){...}
 	call = func(){...}
+	anonymous show func()
 	main = func(){...}
 	init = func(){...}
 
