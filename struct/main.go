@@ -2,15 +2,13 @@ package main
 
 import "fmt"
 
-type User struct {
-	Name string
+type User struct { // struct definition
+	Name string			 // member variable or property
 	Age  int
 }
 
 func person() {
-	var user1 User
-
-	user1 = User{
+	user1 := User{ 	// instance of User type
 		Name: "Sun",
 		Age:  69,
 	}
@@ -30,7 +28,13 @@ func person() {
 
 func main() {
 	person()
-
 }
 
-// struct: in golang struct is method for creating custom data types
+/*
+Struct: In Go, structs are used to define new types that contain multiple fields.
+
+Instance: When I create a value of a custom type in Go, it's called a value or instance. Some also called it object but that's least preferable.
+
+Instantiate: process of making instance called instantiate.
+
+*/
