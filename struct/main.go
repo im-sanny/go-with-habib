@@ -31,7 +31,7 @@ func main() {
 }
 
 /*
-Struct: In Go, structs are used to define new types that contain multiple fields.
+Struct: In Go, structs are used to define new types that contain multiple fields, struct is a datatype made by user.
 
 Instance: When I create a value of a custom type in Go, it's called a value or instance. Some also call it object but that's least preferable.
 
