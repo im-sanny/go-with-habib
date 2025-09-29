@@ -45,17 +45,18 @@ func main() {
 	var x []int
 	x = append(x, 1) // [1], len=1, cap=4 (Go reserves space upfront)
 	x = append(x, 2) // [1 2], len=2, cap=4
-	fmt.Println(x, "len:", len(x), "cap:", cap(x))
 	x = append(x, 3)
 
-	// y := x
-	// x = append(x, 4)
-	// y = append(y, 5)
+	y := x
 
-	// x[0] = 10
+	x = append(x, 4)
+	y = append(y, 5) // here y doesn't have it's own array it's share the same array with x, so if y tries to change or add anything then it'll directly change x, also y and x share same pointer, before this point y had len 3 and cap 4 so there was one empty place before coming to this point, and when y append 5 it goes to that empty place y had and when it sits on the empty place y array changed and since y array is x under the hood it will overwrite 4 and put 5
 
-	// fmt.Println(x)
-	// fmt.Println(y)
+	x[0] = 10
+
+	fmt.Println(x)
+	fmt.Println(y)
+
 
 	// Slice sharing and append
 	// x = []int{1, 2, 3, 4, 5}
