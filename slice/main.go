@@ -15,11 +15,11 @@ import "fmt"
 // }
 
 // Example: Change slice inside a function
-// func changeSlice(a []int) []int {
-// 	a[0] = 10         // modifies underlying array
-// 	a = append(a, 11) // may reallocate if capacity is full
-// 	return a
-// }
+func changeSlice(p []int) []int {
+	p[0] = 10         // modifies underlying array
+	p = append(p, 11) // may reallocate if capacity is full
+	return p
+}
 
 func main() {
 	// Slice literal
@@ -41,30 +41,35 @@ func main() {
 	// s4 = append(s4, 1, 2, 3)
 	// fmt.Println(s4, "len:", len(s4), "cap:", cap(s4))
 
-	// append capacity growth
-	var x []int
-	x = append(x, 1) // [1], len=1, cap=4 (Go reserves space upfront)
-	x = append(x, 2) // [1 2], len=2, cap=4
-	x = append(x, 3)
+	// append capacity growth and overwrite space
+	// var x []int
+	// x = append(x, 1) // [1], len=1, cap=4 (Go reserves space upfront)
+	// x = append(x, 2) // [1 2], len=2, cap=4
+	// x = append(x, 3)
 
-	y := x
+	// y := x
 
-	x = append(x, 4)
-	y = append(y, 5) // here y doesn't have it's own array it's share the same array with x, so if y tries to change or add anything then it'll directly change x, also y and x share same pointer, before this point y had len 3 and cap 4 so there was one empty place before coming to this point, and when y append 5 it goes to that empty place y had and when it sits on the empty place y array changed and since y array is x under the hood it will overwrite 4 and put 5
+	// x = append(x, 4)
+	// y = append(y, 5) // here y doesn't have it's own array it's share the same array with x, so if y tries to change or add anything then it'll directly change x, also y and x share same pointer, before this point y had len 3 and cap 4 so there was one empty place before coming to this point, and when y append 5 it goes to that empty place y had and when it sits on the empty place y array changed and since y array is x under the hood it will overwrite 4 and put 5.
 
-	x[0] = 10
+	// x[0] = 10
 
-	fmt.Println(x)
-	fmt.Println(y)
-
+	// fmt.Println(x)
+	// fmt.Println(y)
 
 	// Slice sharing and append
-	// x = []int{1, 2, 3, 4, 5}
-	// x = append(x, 6, 7)
-	// a := x[4:]          // slice of last elements [5 6 7]
-	// y := changeSlice(a) // modifies slice
-	// fmt.Println("x:", x)
-	// fmt.Println("y:", y)
+	x := []int{1, 2, 3, 4, 5}
+	x = append(x, 6)
+	x = append(x, 7)
+
+	a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' taking the variables of 'x' so under the hood 'x' array will get what returns from the changeSlice func.
+
+	y := changeSlice(a) // modifies slice
+
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
+
+	fmt.Println(x[0:8]) //[1, 2, 3, 4, 10, 6, 7, 11], here we'll get 11 by force bc we have 11 stored in heap and that's the reason we'll get the value not error, we can do this when we know there's a value unless it's not suggested to do this way.
 }
 
 /*
@@ -76,7 +81,7 @@ NOTES ON SLICES
    Slice is built on top of an array and is more flexible.
 
 2. Internally a slice has 3 parts:
-   - pointer: points to the underlying array
+   - pointer: points to the underlying array, first element of the array is the 	pointer
    - length: number of current elements
    - capacity: maximum elements it can grow before reallocation
 
