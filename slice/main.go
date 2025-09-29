@@ -2,100 +2,109 @@ package main
 
 import "fmt"
 
-// func slice() {
+// Example: Slice from an array
+// func sliceFromArray() {
 // 	arr := [6]string{"This", "is", "a", "Go", "interview", "question"}
-
-// 	s := arr[1:4] //[is a go]
+// 	s := arr[1:4] // ["is", "a", "Go"]
 // 	fmt.Println(s)
 
-// 	s1 := s[1:2] //[a] capacity is 4 bc it's using main array reference and if we count from a then we'll get the capacity.
+// 	s1 := s[1:2] // ["a"]
+// 	// capacity is 5-1 = 4, because slice uses underlying array reference
 // 	fmt.Println(s1)
-// 	fmt.Println(len(s1))
-// 	fmt.Println(cap(s1))
+// 	fmt.Println("len:", len(s1), "cap:", cap(s1))
 // }
 
-func changeSlice(a []int) []int {
-	a[0] = 10
-	a = append(a, 11)
-	return a
-}
+// Example: Change slice inside a function
+// func changeSlice(a []int) []int {
+// 	a[0] = 10         // modifies underlying array
+// 	a = append(a, 11) // may reallocate if capacity is full
+// 	return a
+// }
 
 func main() {
-	// s := []int{1, 2, 3} // if i remove fixed size from an array then it becomes slice, and now this calls slice literal
-	// fmt.Println("slice: ", s, "length: ", len(s), "capacity: ", cap(s))
+	// Slice literal
+	// s1 := []int{1, 2, 3}
+	// fmt.Println("slice:", s1, "len:", len(s1), "cap:", cap(s1))
 
-	// s := make([]int, 3) //[0, 0, 0] len = 3, cap =3
-	// s[0] = 69           //[5, 0, 0] len = 3, cap =3
+	// make with len only
+	// s2 := make([]int, 3) // [0 0 0], len=3, cap=3
+	// s2[0] = 69
+	// fmt.Println(s2, "len:", len(s2), "cap:", cap(s2))
 
-	// fmt.Println(s)
-	// fmt.Println(len(s))
-	// fmt.Println(cap(s))
+	// make with len and cap
+	// s3 := make([]int, 3, 5) // [0 0 0], len=3, cap=5
+	// s3[2] = 10
+	// fmt.Println(s3, "len:", len(s3), "cap:", cap(s3))
 
-	// s := make([]int, 3, 5) //[0, 0, 0] len = 3, cap = 5
+	// empty slice (nil slice)
+	// var s4 []int
+	// s4 = append(s4, 1, 2, 3)
+	// fmt.Println(s4, "len:", len(s4), "cap:", cap(s4))
 
-	// s[0] = 69 //[5, 0, 0] len = 3, cap =5
-	// s[2] = 10
-	// fmt.Println(s)
-	// fmt.Println(len(s))
-	// fmt.Println(cap(s))
-
-	// var s []int            //empty slice or nil slice //[], len = 0, cap = 0
-	// s = append(s, 1, 2, 3) //[, 2, 3], len = 3, cap = 3
-	// fmt.Println(s)
-
-	// var x []int      //[], len = 0, cap= 0
-	// x = append(x, 1) //[1], len = 1, cap = 1
-	// x = append(x, 2) //[1, 2] len = 2, cap = 2
-	// x = append(x, 3) //[1, 2, 3] len = 3, cap = 4 // cap become 4 bc when theres no space left and there sth needs to add then it follows slice underlying rules and by that the cap expands.
-	// fmt.Println(x)   //[1, 2, 3]
+	// append capacity growth
+	var x []int
+	x = append(x, 1) // [1], len=1, cap=4 (Go reserves space upfront)
+	x = append(x, 2) // [1 2], len=2, cap=4
+	fmt.Println(x, "len:", len(x), "cap:", cap(x))
+	x = append(x, 3)
 
 	// y := x
-
-	// x = append(x, 4) //[]
+	// x = append(x, 4)
 	// y = append(y, 5)
+
 	// x[0] = 10
 
 	// fmt.Println(x)
 	// fmt.Println(y)
 
-	x := []int{1, 2, 3, 4, 5}
-	x = append(x, 6)
-	x = append(x, 7)
-
-	a := x[4:]
-
-	y := changeSlice(a)
-
-	fmt.Println(x)
-	fmt.Println(y)
-
+	// Slice sharing and append
+	// x = []int{1, 2, 3, 4, 5}
+	// x = append(x, 6, 7)
+	// a := x[4:]          // slice of last elements [5 6 7]
+	// y := changeSlice(a) // modifies slice
+	// fmt.Println("x:", x)
+	// fmt.Println("y:", y)
 }
 
 /*
-Kind of Slices:
-	1. slice from an array
-	2. slice from a slice
-	3. slice literal
-	4. make func with len
-	5. make func with len and capacity
-	6. empty slice or nil slice
-	7. add value with append func
-	8. slice underlying array rules => 1024 -> 100% increase, until 1024 it will increase by 100%, after 1024 it will increase by 25%.
-*/
+---------------------------------------
+NOTES ON SLICES
+---------------------------------------
 
-/*
-	In go a slice has 3 part:
-		1. pointer = here "is" is the pointer
-		2. length = length is 3
-		3. capacity = capacity is 5
+1. Slice is not an array.
+   Slice is built on top of an array and is more flexible.
 
-		# max index of a 10 size array is 9 bc for array count starts with 0.
-		# in a 10 index array u can't define value s[10] = 55, if we try to do this then we'll get runtime error(index out of range).
-		# with append func we can add value in empty or in slice that already have value in it.
-*/
+2. Internally a slice has 3 parts:
+   - pointer: points to the underlying array
+   - length: number of current elements
+   - capacity: maximum elements it can grow before reallocation
 
-/*
-	x = append(x, 1)
-	x = append(x, 2)
-	here append will expand the length and capacity of the array each time we append new value in it. and this is how we can expand length and capacity of the array without any issue.
+3. Ways to create a slice:
+   1. From an array → arr[1:4]
+   2. From another slice → s[1:2]
+   3. Slice literal → []int{1,2,3}
+   4. Using make(len) → make([]int, 3)
+   5. Using make(len, cap) → make([]int, 3, 5)
+   6. Nil slice → var s []int
+   7. Append function → append(s, 1,2,3)
+
+4. Append function:
+   - Expands the length by adding new elements
+   - If no capacity left, it reallocates a bigger array
+   - After Go 1.18 update:
+       * At first append, capacity becomes 4 (not 1,2,4 like before)
+       * Until 256 → doubles capacity
+       * 256–512 → increases by ~1.25x
+       * 512–1024 → increases by ~1.5x
+       * After 1024 → increases by 25%
+
+5. Array vs Slice:
+   - Array has fixed size, cannot grow
+   - Slice can grow dynamically with append
+
+6. Index rule:
+   - Array of size 10 → max index = 9
+   - If you try arr[10] = 55 → runtime error (index out of range)
+
+7. Variadic functions also use slices internally.
 */
