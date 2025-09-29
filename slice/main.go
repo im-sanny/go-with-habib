@@ -15,10 +15,17 @@ import "fmt"
 // }
 
 // Example: Change slice inside a function
-func changeSlice(p []int) []int {
-	p[0] = 10         // modifies underlying array
-	p = append(p, 11) // may reallocate if capacity is full
-	return p
+// func changeSlice(p []int) []int {
+// 	p[0] = 10         // modifies underlying array
+// 	p = append(p, 11) // may reallocate if capacity is full
+// 	return p
+// }
+
+// variadic function
+func print(numbers ...int) { //numbers variable is the slice here
+	fmt.Println(numbers)
+	fmt.Println(len(numbers))
+	fmt.Println(cap(numbers))
 }
 
 func main() {
@@ -58,18 +65,20 @@ func main() {
 	// fmt.Println(y)
 
 	// Slice sharing and append
-	x := []int{1, 2, 3, 4, 5}
-	x = append(x, 6)
-	x = append(x, 7)
+	// x := []int{1, 2, 3, 4, 5}
+	// x = append(x, 6)
+	// x = append(x, 7)
 
-	a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' taking the variables of 'x' so under the hood 'x' array will get what returns from the changeSlice func.
+	// a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' taking the variables of 'x' so under the hood 'x' array will get what returns from the changeSlice func.
 
-	y := changeSlice(a) // modifies slice
+	// y := changeSlice(a) // modifies slice
 
-	fmt.Println("x:", x)
-	fmt.Println("y:", y)
+	// fmt.Println("x:", x)
+	// fmt.Println("y:", y)
 
-	fmt.Println(x[0:8]) //[1, 2, 3, 4, 10, 6, 7, 11], here we'll get 11 by force bc we have 11 stored in heap and that's the reason we'll get the value not error, we can do this when we know there's a value unless it's not suggested to do this way.
+	// fmt.Println(x[0:8]) //[1, 2, 3, 4, 10, 6, 7, 11], here we'll get 11 by force bc we have 11 stored in heap and that's the reason we'll get the value not error, we can do this when we know there's a value unless it's not suggested to do this way.
+
+	print(3, 4, 5)
 }
 
 /*
