@@ -57,7 +57,7 @@ func main() {
 	// y := x
 
 	// x = append(x, 4)
-	// y = append(y, 5) // here y doesn't have it's own array it's share the same array with x, so if y tries to change or add anything then it'll directly change x, also y and x share same pointer, before this point y had len 3 and cap 4 so there was one empty place before coming to this point, and when y append 5 it goes to that empty place y had and when it sits on the empty place y array changed and since y array is x under the hood it will overwrite 4 and put 5.
+	// y = append(y, 5) // here 'y' doesn't have it's own array it's share the same array with 'x', so if 'y' tries to change or add anything then it'll directly change 'x', also 'y' and 'x' share same pointer, before this point 'y' had len 3 and cap 4 so there was one empty place before coming to this point, and when 'y' append 5 it goes to that empty place y had and when it sits on the empty place 'y' array changed and since 'y' array is 'x' under the hood it will overwrite 4 and put 5.
 
 	// x[0] = 10
 
@@ -69,9 +69,9 @@ func main() {
 	// x = append(x, 6)
 	// x = append(x, 7)
 
-	// a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' taking the variables of 'x' so under the hood 'x' array will get what returns from the changeSlice func.
+	// a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' shares the same underlying array with 'x', so when we modify elements of 'a' inside changeSlice (like a[0] = 10), it directly changes 'x'. However, 'x' does NOT automatically get the returned slice from changeSlice - only 'y' gets that return value.
 
-	// y := changeSlice(a) // modifies slice
+	// y := changeSlice(a) // modifies slice. a gets return from changeSlice → y stores a → since a is related to x, x gets everything.
 
 	// fmt.Println("x:", x)
 	// fmt.Println("y:", y)
