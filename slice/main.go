@@ -15,11 +15,11 @@ import "fmt"
 // }
 
 // Example: Change slice inside a function
-// func changeSlice(p []int) []int {
-// 	p[0] = 10         // modifies underlying array
-// 	p = append(p, 11) // may reallocate if capacity is full
-// 	return p
-// }
+func changeSlice(p []int) []int {
+	p[0] = 10 // [6, 7] becomes [10, 6, 7] // this replacing 5 with 10 and changing the original array.
+	p = append(p, 11) // [10, 6,  7, 11] // a and x get's disconnected from here bc it needs to reallocate a new array and when that happens then p get's disconnect and put it's value in a new array and then send it to y, that's how it finishes it's work, also disconnection is the reason x didn't get 11.
+	return p // returns [10, 6,  7, 11]
+}
 
 // variadic function
 func print(numbers ...int) { //numbers variable is the slice here
@@ -65,18 +65,18 @@ func main() {
 	// fmt.Println(y)
 
 	// Slice sharing and append
-	// x := []int{1, 2, 3, 4, 5}
-	// x = append(x, 6)
-	// x = append(x, 7)
+	x := []int{1, 2, 3, 4, 5}
+	x = append(x, 6)
+	x = append(x, 7)
 
-	// a := x[4:] //slice from slice, slice of last elements [5 6 7]. //'a' here did not made any change it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' shares the same underlying array with 'x', so when we modify elements of 'a' inside changeSlice (like a[0] = 10), it directly changes 'x'. However, 'x' does NOT automatically get the returned slice from changeSlice - only 'y' gets that return value.
+	a := x[4:] //slice from slice. slice of last elements [5 6 7]. //'a' here did not made any change, it just took a portion of 'x' and then send it through changeSlice(a) which later come back from changeSlice and stored in 'y' variable, also 'a' shares the same underlying array with 'x', so when we modify elements of 'a' inside changeSlice (like a[0] = 10), it directly changes 'x'. However, 'x' does NOT automatically get the returned slice from changeSlice - only 'y' gets that return value.
 
-	// y := changeSlice(a) // modifies slice. a gets return from changeSlice → y stores a → since a is related to x, x gets everything.
+	y := changeSlice(a) // modifies slice. 'a' does NOT get the return value, only 'y' gets it 'a' still points to the old array [10, 6, 7] (not the new one with 11).
 
-	// fmt.Println("x:", x)
-	// fmt.Println("y:", y)
+	fmt.Println("x:", x)
+	fmt.Println("y:", y)
 
-	// fmt.Println(x[0:8]) //[1, 2, 3, 4, 10, 6, 7, 11], here we'll get 11 by force bc we have 11 stored in heap and that's the reason we'll get the value not error, we can do this when we know there's a value unless it's not suggested to do this way.
+	fmt.Println(x[0:8]) //[1, 2, 3, 4, 10, 6, 7, 11], here we'll get 11 by force bc we have 11 stored in heap and that's the reason we'll get the value not error, we can do this when we know there's a value unless it's not suggested to do this way.
 
 	print(3, 4, 5)
 }
@@ -87,7 +87,13 @@ NOTES ON SLICES
 ---------------------------------------
 
 1. Slice is not an array.
-   Slice is built on top of an array and is more flexible.
+   i. Slice is built on top of an array and is more flexible.
+	 ii. Reallocation happens ONLY when len == cap.
+	 iii. New capacity is typically double the old capacity (for small slices).
+	 iv. After reallocation, the slice points to a completely new array.
+	 v. Once arrays are separated, changes in one don't affect the other
+	 vi. Once arrays are separated, changes in one don't affect the other
+
 
 2. Internally a slice has 3 parts:
    - pointer: points to the underlying array, first element of the array is the 	pointer
@@ -106,12 +112,6 @@ NOTES ON SLICES
 4. Append function:
    - Expands the length by adding new elements
    - If no capacity left, it reallocates a bigger array
-   - After Go 1.18 update:
-       * At first append, capacity becomes 4 (not 1,2,4 like before)
-       * Until 256 → doubles capacity
-       * 256–512 → increases by ~1.25x
-       * 512–1024 → increases by ~1.5x
-       * After 1024 → increases by 25%
 
 5. Array vs Slice:
    - Array has fixed size, cannot grow
@@ -122,4 +122,10 @@ NOTES ON SLICES
    - If you try arr[10] = 55 → runtime error (index out of range)
 
 7. Variadic functions also use slices internally.
+
+8. How Heap Works:
+ In Go, you don't manually manage heap vs stack - the compiler decides. However:
+    Small slices might stay on the stack
+    Large slices or those that escape functions go to the heap
+    When append() needs to reallocate, it creates new memory on the heap
 */
