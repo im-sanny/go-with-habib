@@ -16,9 +16,9 @@ import "fmt"
 
 // Example: Change slice inside a function
 func changeSlice(p []int) []int {
-	p[0] = 10 // [6, 7] becomes [10, 6, 7] // this replacing 5 with 10 and changing the original array.
+	p[0] = 10         // [6, 7] becomes [10, 6, 7] // this replacing 5 with 10 and changing the original array.
 	p = append(p, 11) // [10, 6,  7, 11] // a and x get's disconnected from here bc it needs to reallocate a new array and when that happens then p get's disconnect and put it's value in a new array and then send it to y, that's how it finishes it's work, also disconnection is the reason x didn't get 11.
-	return p // returns [10, 6,  7, 11]
+	return p          // returns [10, 6,  7, 11]
 }
 
 // variadic function
@@ -129,3 +129,5 @@ NOTES ON SLICES
     Large slices or those that escape functions go to the heap
     When append() needs to reallocate, it creates new memory on the heap
 */
+
+// Golden rule: Append causes reallocation only when length equals capacity, which breaks shared array connections.
