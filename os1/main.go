@@ -50,5 +50,13 @@ ENIAC used to use IBM's 80 column punch card which used to have 12 row.
 
 that time there wasn't any os so everything has to do manually.
 
+the idea of  operating system come from operator that use to operate eniac with punch card, with time to make the computer more efficient they automate the work of operator with operating system.
+operator -> operating
+automatic system -> system
+
+operator used to help running program in early days but manually.
+os also helps running program but automatically.
+
+1956 - GM-NAA first operating system
 
 */
