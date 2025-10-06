@@ -22,6 +22,8 @@ Generations of Computers:
  3.Integrated Circuits (1960s)
  4.Microprocessors (1970s–Now)
  5.AI / Quantum (Future).
+if a computer is 8 bit then each cell of the RAM can keep 8 bit of data, so each cell can hold 0 to 256 in decimal number.
+
 
 Computer History – Cheat Sheet
 
@@ -36,4 +38,17 @@ Alan Turing → Father of CS & AI, Turing Machine.
 1958 IC (Kilby, Noyce) → Multiple circuits on a chip.
 1971 Intel 4004 → First microprocessor (4-bit).
 1981 IBM PC → Popularized personal computing (16-bit).
+*/
+/*
+OS class 2 -
+
+ENIAC was starting era general purpose computer that used to use punch card for:
+	i. Input(data and instruction)
+	ii. Output(result)
+	iii. Storage(storing temporary data)
+ENIAC used to use IBM's 80 column punch card which used to have 12 row.
+
+that time there wasn't any os so everything has to do manually.
+
+
 */
