@@ -39,8 +39,17 @@ Alan Turing → Father of CS & AI, Turing Machine.
 1971 Intel 4004 → First microprocessor (4-bit).
 1981 IBM PC → Popularized personal computing (16-bit).
 */
+
 /*
-OS class 2 -
+OS and computer architecture class 2 -
+
+os helps to run or execute program in a system
+
+program loads on ram after turning on the system, hdd/sdd only store data that we need for long time.
+
+cpu start to work on the time we start or turn on our system and it keeps working until we turn the system off,
+
+os helps to
 
 ENIAC was starting era general purpose computer that used to use punch card for:
 	i. Input(data and instruction)
@@ -58,5 +67,10 @@ operator used to help running program in early days but manually.
 os also helps running program but automatically.
 
 1956 - GM-NAA first operating system
+first os was terminal based not gui
+unix -> macos -> linux
+1960 -> keyboard
+1970 -> mouse
+
 
 */
