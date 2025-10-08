@@ -24,8 +24,7 @@ Generations of Computers:
  5.AI / Quantum (Future).
 if a computer is 8 bit then each cell of the RAM can keep 8 bit of data, so each cell can hold 0 to 256 in decimal number.
 
-
-Computer History – Cheat Sheet
+Computer History:
 
 Abacus → First known tool.
 1703 Leibniz → Binary system.
@@ -41,36 +40,29 @@ Alan Turing → Father of CS & AI, Turing Machine.
 */
 
 /*
-OS and computer architecture class 2 -
+OS and Computer Architecture:
 
-os helps to run or execute program in a system
+1. OS (Operating System) → Bridge between hardware & software.
+2. Main role → Runs programs, manages CPU, memory, files, and I/O.
+3. When system starts →
+	  i. BIOS/UEFI runs → loads OS from HDD/SSD to RAM.
+	  ii. CPU executes OS + user programs.
+4. RAM → Temporary, fast, volatile memory.
+5. HDD/SSD → Permanent storage.
+6. CPU → Works continuously until system off.
 
-program loads on ram after turning on the system, hdd/sdd only store data that we need for long time.
+Early Computing & ENIAC:
 
-cpu start to work on the time we start or turn on our system and it keeps working until we turn the system off,
+ENIAC (1945) → First general-purpose electronic computer.
+Used punch cards for input, output, and storage.
+IBM 80-column punch cards, 12 rows each.
+No OS — everything done manually by operators.
+OS idea came from automating operator’s manual work.
 
-os helps to
-
-ENIAC was starting era general purpose computer that used to use punch card for:
-	i. Input(data and instruction)
-	ii. Output(result)
-	iii. Storage(storing temporary data)
-ENIAC used to use IBM's 80 column punch card which used to have 12 row.
-
-that time there wasn't any os so everything has to do manually.
-
-the idea of  operating system come from operator that use to operate eniac with punch card, with time to make the computer more efficient they automate the work of operator with operating system.
-operator -> operating
-automatic system -> system
-
-operator used to help running program in early days but manually.
-os also helps running program but automatically.
-
-1956 - GM-NAA first operating system
-first os was terminal based not gui
-unix -> macos -> linux
-1960 -> keyboard
-1970 -> mouse
-
-
+1956 ->	GM-NAA I/O – first OS (batch system)
+1960s ->	Keyboard input, time-sharing OS
+1970s ->	UNIX developed
+1980s ->	macOS, MS-DOS (personal computers)
+1990s ->	Linux (open-source UNIX-like)
+2000s -> Now	GUI-based OS (Windows, macOS, Linux, Android, iOS)
 */
