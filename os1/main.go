@@ -64,5 +64,15 @@ OS idea came from automating operator’s manual work.
 1970s ->	UNIX developed
 1980s ->	macOS, MS-DOS (personal computers)
 1990s ->	Linux (open-source UNIX-like)
-2000s -> Now	GUI-based OS (Windows, macOS, Linux, Android, iOS)
+2000s -> Now GUI-based OS (Windows, macOS, Linux, Android, iOS)
+*/
+
+/*
+Cpu and processing:
+	cpu has 2 part in it:
+	 i. Processing unit
+	 ii. Register set
+
+	 Processing unit has 2 part, one is Arithmetic logic unit another control unit.
+
 */
