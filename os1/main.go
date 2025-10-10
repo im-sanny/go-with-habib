@@ -46,7 +46,7 @@ OS and Computer Architecture:
 2. Main role → Runs programs, manages CPU, memory, files, and I/O.
 3. When system starts →
 	  i. BIOS/UEFI runs → loads OS from HDD/SSD to RAM.
-	  ii. CPU executes OS + user programs.
+	  ii. CPU executes OS + user programs.r7r[7]y'y
 4. RAM → Temporary, fast, volatile memory.
 5. HDD/SSD → Permanent storage.
 6. CPU → Works continuously until system off.
@@ -74,5 +74,13 @@ Cpu and processing:
 	 ii. Register set
 
 	 Processing unit has 2 part, one is Arithmetic logic unit another control unit.
+	 Register set stores data and instruction temporarily and helps PU to complete task easily.
+
+	 Register set has SP, BP, IR, PC and General purpose registers
+	 SP -> Stack Pointer: points the top of the stack
+	 BP -> Base Pointer: points the base of the stack
+	 IR -> Instruction Register: keeps 
+	 PC -> Program Counter
+	 General purpose registers ->
 
 */
