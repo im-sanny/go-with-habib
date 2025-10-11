@@ -79,8 +79,9 @@ Cpu and processing:
 	 Register set has SP, BP, IR, PC and General purpose registers
 	 SP -> Stack Pointer: points the top of the stack
 	 BP -> Base Pointer: points the base of the stack
-	 IR -> Instruction Register: keeps 
-	 PC -> Program Counter
-	 General purpose registers ->
+	 IR -> Instruction Register: keeps present executed instruction.
+	 General purpose registers -> AX, BX, CX, DX: used for data transfer, calculation etc.
+
+	 
 
 */
