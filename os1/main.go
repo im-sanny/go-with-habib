@@ -68,20 +68,22 @@ OS idea came from automating operator’s manual work.
 */
 
 /*
-Cpu and processing:
-	cpu has 2 part in it:
-	 i. Processing unit
-	 ii. Register set
+CPU & Processing:
 
-	 Processing unit has 2 part, one is Arithmetic logic unit another control unit.
-	 Register set stores data and instruction temporarily and helps PU to complete task easily.
-
-	 Register set has SP, BP, IR, PC and General purpose registers
-	 SP -> Stack Pointer: points the top of the stack
-	 BP -> Base Pointer: points the base of the stack
-	 IR -> Instruction Register: keeps present executed instruction.
-	 General purpose registers -> AX, BX, CX, DX: used for data transfer, calculation etc.
-
-	 
-
+• CPU = brain of computer → performs all logic & control.
+• CPU parts → Processing Unit (PU) + Register Set.
+• PU = ALU (calculations, logic) + CU (control, instruction flow).
+• Registers = tiny, fast memory inside CPU.
+• SP → top of stack | BP → base of stack frame.
+• IR → current instruction | PC → next instruction address.
+• AX, BX, CX, DX → general purpose registers.
+• 8-bit CPU → AL, BL, CL, DL (1 byte each).
+• 16-bit CPU → AX = AH (high 8 bits) + AL (low 8 bits).
+• 32-bit → EAX etc | 64-bit → RAX etc.
+• 8-bit CPU ⇒ each RAM cell = 8 bits (1 byte).
+• Process = program in execution (using RAM + CPU time).
+• Each process has its own memory (code, data, stack, heap).
+• Stack stores temp data for functions & local vars.
+• SP & BP manage stack frames.
+• Summary → CPU = PU + Registers | PU = ALU + CU | SP/BP = stack control.
 */
