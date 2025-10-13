@@ -2,7 +2,17 @@ package main
 
 import "fmt"
 
+func add(x int, y int) int {
+	res := x + y
+	return res
+}
+
 func main() {
+	var a int = 10
+
+	sum := add(a, 4)
+	fmt.Println(sum)
+
 	fmt.Println("Computer architecture!")
 }
 
@@ -86,4 +96,21 @@ CPU & Processing:
 • Stack stores temp data for functions & local vars.
 • SP & BP manage stack frames.
 • Summary → CPU = PU + Registers | PU = ALU + CU | SP/BP = stack control.
+
+A process behaves like a virtual computer because it has its own virtual CPU, memory space (RAM), and other resources provided by the operating system.
+*/
+
+/*
+SP vs BP:
+
+	each cell address  usually starts from 0, 1, 2.
+	if a computer is 8 bit then it's cell keeps 8 byte in a cell of ram.
+
+	if a computer is 16 bit then its cell address starts like 0, 2, 4, 6, 8, 10, 12, 14, 16 -> each cell keeps 2 byte
+	if a computer is 32 bit then its cell address starts like 0, 4, 8, 12 .... -> each cell keeps 4 byte
+	if a computer is 64 bit then its cell address starts like 0, 8, 16, 24 .... -> each cell keeps 8 byte
+
+Always the value of the SP will be lower than BP.
+
+stack starts to execute from bottom or lower of it's address of space
 */
