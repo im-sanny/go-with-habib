@@ -103,14 +103,81 @@ A process behaves like a virtual computer because it has its own virtual CPU, me
 /*
 SP vs BP:
 
-	each cell address  usually starts from 0, 1, 2.
-	if a computer is 8 bit then it's cell keeps 8 byte in a cell of ram.
+Memory Architecture:
+- 8-bit: addresses 0, 1, 2... (byte-addressable)
+- 16-bit: addresses 0, 2, 4... (but still byte-addressable)
+- 32-bit: addresses 0, 4, 8...
+- 64-bit: addresses 0, 8, 16...
 
-	if a computer is 16 bit then its cell address starts like 0, 2, 4, 6, 8, 10, 12, 14, 16 -> each cell keeps 2 byte
-	if a computer is 32 bit then its cell address starts like 0, 4, 8, 12 .... -> each cell keeps 4 byte
-	if a computer is 64 bit then its cell address starts like 0, 8, 16, 24 .... -> each cell keeps 8 byte
+STACK BEHAVIOR:
+- Stack grows DOWNWARD (from high to low addresses)
+- SP always points to the CURRENT TOP of stack
+- BP points to a STABLE BASE within current function frame
+- BP is typically at HIGHER address than SP
+- SP is dynamic; BP is relatively stable during function execution
 
-Always the value of the SP will be lower than BP.
+STACK FRAME LAYOUT (growing downward):
+[HIGHER ADDRESSES]
+... Caller's data ...
+[Parameter N]
+...
+[Parameter 1]
+[Return Address]
+[Saved BP]        ← BP points here (function frame start)
+[Local Variable 1]
+...
+[Local Variable N] ← SP points here (current stack top)
+[LOWER ADDRESSES]
 
-stack starts to execute from bottom or lower of it's address of space
+FUNCTION CALL PROCESS:
+1. Caller pushes arguments (right to left)
+2. Caller pushes return address
+3. CALL instruction jumps to function
+4. Function prologue:
+   - Push current BP (save caller's frame)
+   - Move SP to BP (set new frame base)
+   - Adjust SP downward for local variables
+5. Function executes
+6. Function epilogue:
+   - Move SP to BP (clean locals)
+   - Pop old BP (restore caller's frame)
+   - RET instruction pops return address and jumps back
+
+MEMORY SEGMENTS:
+- Code Segment: Program instructions
+- Data Segment: Global/static variables
+- Stack: Function calls, local variables (grows downward)
+- Heap: Dynamic allocation (grows upward)
+
+Return Address:
+1. RETURN ADDRESS FIRST:
+   - When CALL instruction executes, the CPU automatically:
+     1. Pushes return address (where to come back to)
+     2. Jumps to the new function
+   - This ensures the function knows how to return
+
+2. SP MOVEMENT:
+   - SP always moves in fixed increments based on system:
+     - 32-bit: ±4 bytes each push/pop
+     - 64-bit: ±8 bytes each push/pop
+   - SP moves DOWN when pushing (adding to stack)
+   - SP moves UP when popping (removing from stack)
+   - Example (32-bit):
+     Start: SP = 1000
+     Push: SP = 996 (1000 - 4)
+     Push: SP = 992 (996 - 4)
+     Pop:  SP = 996 (992 + 4)
+
+3. TYPICAL FUNCTION CALL SEQUENCE:
+   - CALL pushes return address
+   - Function pushes old BP (save caller's frame)
+   - Function sets new BP = SP (create new frame)
+   - Function adjusts SP downward for local variables
+
+KEY POINTS:
+- Each function call creates a new stack frame
+- BP provides stable reference to access parameters and locals
+- SP tracks the current stack top for push/pop operations
+- Stack frames are nested (like Russian dolls)
+- When function returns, its stack frame is effectively "discarded"
 */
