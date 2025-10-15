@@ -13,7 +13,6 @@ func main() {
 	sum := add(a, 4)
 	fmt.Println(sum)
 
-	fmt.Println("Computer architecture!")
 }
 
 /*
@@ -180,4 +179,24 @@ KEY POINTS:
 - SP tracks the current stack top for push/pop operations
 - Stack frames are nested (like Russian dolls)
 - When function returns, its stack frame is effectively "discarded"
+*/
+
+/*
+Context Switching, PCB, Concurrency:
+context switching: switching from one topic to another is context switching, in this case cpu switches from one process to run another even tho it does one thing at once but because of the speed of context switch or processing we think it doing everything at once.
+
+program counter points one cell at a time, then control unit will keep that cells instructions in Instruction Register, then os will increase value of program counter 1 to move to next cell, then CU will fetch that instruction to decode then it will be kept in somewhere like AL, BL, CL, then it'll tell ALU to do it's part and then it'll keep the output in Data Register or somewhere. then program counter will move to next cell and this will keep going
+
+a normal modern computer can executes 1 billion operations in one second.
+OS controls the cpu and process
+
+PCB -> process control block, this is where the state of the process is set
+state: all the information of the cpu that helps to execute instruction is state.
+
+pid: process id which is saved in PCB
+
+concurrency: our brain feels like everything happening at once but it's not the exact case, actually cpu executing one thing at once but we feel like it's doing all at once and this confusion or thinking that's concurrency.
+
+
+software: binary executable file
 */
