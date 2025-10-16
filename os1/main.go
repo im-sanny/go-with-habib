@@ -183,20 +183,18 @@ KEY POINTS:
 
 /*
 Context Switching, PCB, Concurrency:
-context switching: switching from one topic to another is context switching, in this case cpu switches from one process to run another even tho it does one thing at once but because of the speed of context switch or processing we think it doing everything at once.
+Context switching: cpu switches from one process to another so fast that it looks like all running at once.
 
-program counter points one cell at a time, then control unit will keep that cells instructions in Instruction Register, then os will increase value of program counter 1 to move to next cell, then CU will fetch that instruction to decode then it will be kept in somewhere like AL, BL, CL, then it'll tell ALU to do it's part and then it'll keep the output in Data Register or somewhere. then program counter will move to next cell and this will keep going
+Program Counter (PC): points current instruction and moves to next after each execution.
+Control Unit (CU): takes instruction from memory, decodes it, and sends to ALU for execution.
+ALU: does calculation or logic part and stores result in register.
+Modern CPU: can do around 1 billion operations per second.
+OS: controls cpu and decides which process runs next by managing PC and process states.
 
-a normal modern computer can executes 1 billion operations in one second.
-OS controls the cpu and process
+PCB (Process Control Block): small data box where OS keeps process info like id, state, registers, etc.
+State: all the cpu info needed to continue process from where it stopped.
 
-PCB -> process control block, this is where the state of the process is set
-state: all the information of the cpu that helps to execute instruction is state.
-
-pid: process id which is saved in PCB
-
-concurrency: our brain feels like everything happening at once but it's not the exact case, actually cpu executing one thing at once but we feel like it's doing all at once and this confusion or thinking that's concurrency.
-
-
-software: binary executable file
+PID: unique process id saved inside PCB.
+Concurrency: cpu runs one thing at a time but so fast that it looks like many are running together.
+Software: binary executable file that cpu can run as process.
 */
