@@ -196,5 +196,35 @@ State: all the cpu info needed to continue process from where it stopped.
 
 PID: unique process id saved inside PCB.
 Concurrency: cpu runs one thing at a time but so fast that it looks like many are running together.
+concurrency is a feelings.
 Software: binary executable file that cpu can run as process.
+*/
+
+/*
+Context Switching vs Parallelism:
+context switching: man with one hand etching 2 parts of the body at the same time but not at once, one after another.
+parallelism: man with 2 hand etching 2 parts of the body same time, doing it at once without any switch.
+
+used as concept:
+suppose intel core i3 cpu has 3 core inside it, each core has 2 virtual or logical cpu, these cpus exists virtually not physically, so in 3 core cpu it'll have 6 cpu's, and these will have everything that a cpu has in it,
+
+core is some sort of box or home inside cpu
+
+process = cpu, cpu = process
+
+if there are 6 process then the cpu will run them all at once and at same time because 6 cpu will take care of 6 process so it'll run smoothly without any context switching.
+
+and if there are 7 process then first 5 process will be done by 5 virtual cpu parallely, and last one will run last 2 process by context switching.
+
+modern computer also has context switching, concurrency beside parallelism, but older cpu only had context switching, concurrency but don't have parallelism.
+
+why intel tell logical cpu as thread when thread is different from that?
+
+process stay inside thread or thread stay inside process?
+
+suppose a cpu has only one process capability and  sometime cpu take 15 minutes to execute 2 program because of context switch, in this case executing time becomes longer bc of context switch but if it execute one after another then it'll execute faster and switch time will be saved, but cpu knows better about it so it decides what to do and how to do. and for doing that scheduling algo helps the cpu to make decision.
+
+what is scheduling algorithm?
+what is some of them?
+
 */
