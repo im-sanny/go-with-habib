@@ -216,7 +216,7 @@ logical cpu (hardware thread) → virtual cpu inside core.
 process = running program.
 thread = smaller part inside process.
 
-intel calls logical cpu “threads” because each runs one software thread.
+intel calls logical cpu as “threads” because each runs one software thread.
 
 old cpu → only concurrency (context switching).
 modern cpu → concurrency + real parallelism.
