@@ -208,7 +208,7 @@ concurrency → one hand switching fast between tasks, all seem to progress.
 parallelism → two hands scratching both places at same time.
 
 context switching = cpu switching between processes.
-concurrency = many tasks handled together (by fast switching).
+concurrency = many tasks handled together (by fast switching). concurrency is illusion of parallelism, it's actually context switching but the process is so fast that we feel like parallelism.
 parallelism = many tasks run truly together (multi-core).
 
 core → physical cpu unit or small box inside the main cpu.
@@ -232,4 +232,41 @@ types:
 - RR → equal time slice
 - Priority → high priority first
 - Multilevel Queue → mixed methods
+*/
+
+/*
+Threads ->
+
+threads: threads are unit of execution inside process. it helps to execute program that a process get
+
+process is a kitchen in a restaurant and thread is a chef who works in the kitchen and cook.
+
+2 chef from same kitchen can easily use everything they have in their kitchen, but when they want to use stuffs from other kitchen than theirs then it won't be that easy. so if theres multiple thread then they can access everything in together easily but each process is different form each other that's why it's not easy for it to access data or anything from other process.
+
+when a create it has 1 thread by default.
+
+threads helps to execute one or many program from a process.
+
+since a process has 1 thread by default can i say it's executing thread instead it's executing process.
+
+process has a thread by default so we can say it's execute instead of process execute.
+
+thread is virtual process.
+
+one single process = one single thread, also everything a process has a thread has is it as well, like 'cpu and all the registers'
+
+a process can create multiple thread
+
+when os points program counter then it'll create a thread, cpu will run process -> process run threads -> threads run program
+
+logical cpu or virtual cpu or core is hardware thread and software thread is execution unit inside a process
+
+one process can be runned by 2 vcpu, and then they can divide thread between them to work faster. this can happen when vcpu is free and don't have enough process to run.
+
+os manipulates program counter.
+os is the bridge between hardware and software.
+
+example: after turning on the system cpu takes os data from hdd then start's to execute and os comes to power, then when we click on a music player os creates a process to execute program and play music, in music process there will be code segment, data segment,stack and heap. suppose code segment has 10 lines of code, program counter will point to the first line then it'll keep it in instruction register then it'll increase program counter value by 1, then control unit will decode and will execute by arithmetic logic unit and if needed it'll take help from register set, then it'll go back to check which one program counter points to run the same process. cpu runs thread and thread runs program
+
+
 */

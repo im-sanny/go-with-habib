@@ -18,7 +18,7 @@ Suppose Intel Core i3 CPU has 3 cores. Each core has 2 logical or virtual CPUs (
 These logical CPUs aren’t real hardware but act like separate CPUs to handle tasks faster.
 So, 3 cores × 2 threads = 6 logical CPUs total.
 
-core = physical processing unit inside cpu or  Each core is like a small home or box inside the main CPU.
+core = physical processing unit inside cpu or Each core is like a small home or box inside the main CPU.
 logical cpu = virtual cpu inside core (created by hyper-threading).
 
 process ≠ cpu.
@@ -50,6 +50,7 @@ scheduling algorithm:
 it helps cpu decide which process or thread to run next and for how long.
 
 some common scheduling algorithms:
+
 1. FCFS (First Come First Serve) – runs in order of arrival.
 2. SJF (Shortest Job First) – shorter tasks first.
 3. RR (Round Robin) – gives each process equal small time slices.
