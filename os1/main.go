@@ -235,5 +235,19 @@ types:
 */
 
 /*
+Threads:
+
+- Thread: unit of execution inside a process, runs program given by OS.
+- Analogy: process = kitchen, thread = chef; threads of same process share resources, threads of different process cannot.
+- Process has 1 thread by default; can create multiple threads.
+- Threads execute program instructions but belong to the process.
+- Process: has own memory (code, data, heap, stack); Thread: shares memory but has own stack, registers, PC.
+- Execution flow: process → threads → CPU executes threads.
+- Logical CPU / virtual CPU / core = hardware thread; software thread = execution unit inside process.
+- Multiple threads can run on multiple vCPUs for parallel execution if vCPUs are free.
+- OS is bridge between hardware and software; manages scheduling but does not directly change PC in normal operation.
+*/
+
+/*
 Example: After turning on the system, the CPU loads the OS data from the HDD into memory, starts executing it, and the OS comes into power. When we click on a music player, the OS creates a process to execute the program and play music. In the music process, there will be a code segment, data segment, stack, and heap. The process creates multiple threads for different tasks (UI thread, audio thread, file thread). Suppose the code segment has 10 lines of code. The program counter points to the first line, loads it into the instruction register, then increases the program counter by 1 to move to the next line or instruction. The control unit decodes the instruction, the arithmetic logic unit executes it, and it uses the register set if needed. Then it goes back to the program counter to run the next instruction. The CPU switches rapidly between threads using context switching.
 */
