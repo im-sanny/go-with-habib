@@ -246,6 +246,7 @@ Threads:
 - Logical CPU / virtual CPU / core = hardware thread; software thread = execution unit inside process.
 - Multiple threads can run on multiple vCPUs for parallel execution if vCPUs are free.
 - OS is bridge between hardware and software; manages scheduling but does not directly change PC in normal operation.
+- Each thread has it's own TCB or Thread control block.
 */
 
 /*
