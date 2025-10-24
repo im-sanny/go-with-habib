@@ -29,7 +29,15 @@ func calculate() (result int) {
 
 	result = 5
 	fmt.Println("second", result)
-	// now result =  5, and this 5 will replace show funcs result which is 0 but after replace it'll be 5, and then defer will be 15, and bc results reference holds total sum of result so in the end result = will be 15 and that will be returned so main first = will be 15. and about storing reference? run time managed memory will store the defer and closure.  i need more clarification about this one, there still so many confusion which yet to understand.
+
+	// now result = 5, and it holds this new value in memory.
+	// later when show() runs, it looks at the same result (by reference),
+	// so it sees the updated value (5), adds 10 → result = 15.
+	// since result is a named return variable, this updated value (15)
+	// becomes the final return value, so main prints 15.
+	// about storing reference: the runtime stores the defer and the closure
+	// in its managed memory (runtime-managed space), not in the stack.
+
 	return
 }
 
@@ -45,7 +53,7 @@ func calc() int {
 
 	result = 5
 	fmt.Println("second", result)
-	//show yet to execute so from here the value of result will be changed to 5, and since result is a part of closure so it'll be used as referenced and that's how results 0 will be replaced with 5 so show = 15 now. but how it returns
+	//now return value will be copied before defer run, bc in this type of func return don't care about what defer will return or what value it has
 	return result
 }
 
@@ -58,6 +66,10 @@ func main() {
 }
 
 /*
+Defer ->
+
+Defer is a Go keyword that delays the execution of a function until the surrounding function returns.
+
 defer stays in runtime-managed memory.
 Runtime-managed memory = memory that’s allocated, tracked, and freed by the Go runtime, not directly by the OS.
 
@@ -66,7 +78,27 @@ Defer follows LIFO (Last In, First Out) — the last deferred func will be the f
 defer uses a linked list data structure.
 The linked list of defers is stored in memory managed by the Go runtime.
 
-all the defer func forms closure, it's a must.
+all the defer func forms closure, it's a must. is it?
+
+calculate():
+- named return → result created at start.
+- defer stored in runtime memory, closure sees result by reference.
+- result = 5 → prints second 5.
+- on return → defer runs, adds 10 → result = 15.
+- final return = 15.
+
+calc():
+- normal return → result is local only.
+- return result (5) happens first, then defer runs (makes result 15).
+- but return already copied 5 → final return = 5.
+
+- named return → defer can change return.
+- normal return → defer runs after value copied.
+- defer stored in runtime (linked list), closure captures by reference.
+
+named return: return value is live till the end, so defer can still change it before returning.
+normal return: return value gets copied first, then defer runs, so defer can't affect it.
+
 
 what are the rules of named return value func and simple return value func?
 
@@ -78,17 +110,17 @@ what are the rules of named return value func and simple return value func?
 */
 
 /*
-after compilation phase, a() and main() will be in the code segment.
-when execution starts, a main stack frame is created in the stack.
-it checks main, finds a(), and goes inside a().
-it sees i = 0, then println prints it.
+	after compilation phase, a() and main() will be in the code segment.
+	when execution starts, a main stack frame is created in the stack.
+	it checks main, finds a(), and goes inside a().
+	it sees i = 0, then println prints it.
 
-then it sees defer, which gets registered in runtime-managed memory to run later.
-then i = i + 1, and println prints the new value.
-then another defer, which also gets registered to run later.
+	then it sees defer, which gets registered in runtime-managed memory to run later.
+	then i = i + 1, and println prints the new value.
+	then another defer, which also gets registered to run later.
 
-now everything in a() is done except the defers,
-so before returning, runtime executes them in LIFO order —
-last defer runs first, then the first one.
+	now everything in a() is done except the defers,
+	so before returning, runtime executes them in LIFO order —
+	last defer runs first, then the first one.
 
 */
