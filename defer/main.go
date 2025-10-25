@@ -25,10 +25,23 @@ func calculate() (result int) {
 		fmt.Println("defer", result)
 	}
 
-	defer show()
+	defer show() //15
 
 	result = 5
-	fmt.Println("second", result)
+	p := func(a int) {
+		fmt.Println("me", a)
+	}
+	defer p(result) // 5
+	// here result = 5, and defer evaluates its arguments right away,
+	// so p(result) becomes p(5) and gets stored like that.
+	// even if result changes later (like in show → 15),
+	// this defer won’t see that update since it already copied 5.
+	// defer follows LIFO, so show() will run last and update result = 15,
+	// but earlier defers will still use the old value (5).
+	defer fmt.Println(result) //5
+
+	fmt.Println("second", result) //5
+	defer fmt.Println(5)          //5
 
 	// now result = 5, and it holds this new value in memory.
 	// later when show() runs, it looks at the same result (by reference),
@@ -68,17 +81,15 @@ func main() {
 /*
 Defer ->
 
-Defer is a Go keyword that delays the execution of a function until the surrounding function returns.
+- Defer is a Go keyword that delays the execution of a function until the surrounding function returns.
 
-defer stays in runtime-managed memory.
-Runtime-managed memory = memory that’s allocated, tracked, and freed by the Go runtime, not directly by the OS.
+- defer stays in runtime-managed memory.
+- Runtime-managed memory = memory that’s allocated, tracked, and freed by the Go runtime, not directly by the OS.
 
-Defer follows LIFO (Last In, First Out) — the last deferred func will be the first one to execute.
+- Defer follows LIFO (Last In, First Out) — the last deferred func will be the first one to execute.
 
-defer uses a linked list data structure.
-The linked list of defers is stored in memory managed by the Go runtime.
-
-all the defer func forms closure, it's a must. is it?
+- Defer uses a linked list data structure.
+- The linked list of defers is stored in memory managed by the Go runtime.
 
 calculate():
 - named return → result created at start.
@@ -96,12 +107,20 @@ calc():
 - normal return → defer runs after value copied.
 - defer stored in runtime (linked list), closure captures by reference.
 
-named return: return value is live till the end, so defer can still change it before returning.
-normal return: return value gets copied first, then defer runs, so defer can't affect it.
+- Named return: return value is live till the end, so defer can still change it before returning.
+- Normal return: return value gets copied first, then defer runs, so defer can't affect it.
 
+Named return value func rules:
+1. All code executes.
+2. Deferred functions are stored in runtime-managed memory.
+3. On return, deferred functions execute (LIFO), and can modify named variables.
+4. The (possibly updated) named variable’s value is returned.
 
-what are the rules of named return value func and simple return value func?
-
+Normal return function::
+1. All code executes.
+2. Deferred functions are stored in runtime-managed memory.
+3. return value won't wait for defer to be updated or defer has no chance to manipulate the value that will be return
+4. Deferred functions execute afterward but cannot change the returned value.
 
 */
 
@@ -122,5 +141,4 @@ what are the rules of named return value func and simple return value func?
 	now everything in a() is done except the defers,
 	so before returning, runtime executes them in LIFO order —
 	last defer runs first, then the first one.
-
 */
