@@ -247,6 +247,13 @@ Threads:
 - Multiple threads can run on multiple vCPUs for parallel execution if vCPUs are free.
 - OS is bridge between hardware and software; manages scheduling but does not directly change PC in normal operation.
 - Each thread has it's own TCB or Thread control block.
+
+for every new thread creation there will be different stack create.
+
+thread and process does same work at the first stage but when there are many thread then process and thread get's separated.
+
+how a thread runs?
+thread executes program inside stack or executes stack but what or who executes thread? os executes thread?
 */
 
 /*
