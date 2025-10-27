@@ -248,12 +248,20 @@ Threads:
 - OS is bridge between hardware and software; manages scheduling but does not directly change PC in normal operation.
 - Each thread has it's own TCB or Thread control block.
 
-for every new thread creation there will be different stack create.
-
-thread and process does same work at the first stage but when there are many thread then process and thread get's separated.
-
-how a thread runs?
-thread executes program inside stack or executes stack but what or who executes thread? os executes thread?
+Advance thread:
+- Each new thread has its own stack but shares the process’s code, data, and heap.
+- Separate stack for each thread
+- Each thread executes using its own stack, program counter, and registers.
+- Threads execution is controlled by PC and CPU registers not just the stack.
+- At the start, a process has only one thread, so process and thread seem to do the same work. But when multiple threads are created, their roles become distinct — the process manages resources, and the threads handle execution.
+- A thread runs when the OS scheduler assigns it to a CPU, and the CPU executes its instructions using the thread’s own program counter, stack, and registers.
+- A thread executes the program’s instructions using its own stack.
+- The CPU executes the thread, and the OS schedules which thread runs when.
+- The kernel is the core part of the OS that directly interacts with hardware.
+- It manages CPU, memory, devices, and processes/threads.
+- It provides services and abstractions for the rest of the OS and applications.
+- Kernel manages hardware and core OS functions; other parts of the OS and user programs run on top of it, scheduled by the CPU via the kernel.
+- The kernel decides which thread or process runs on which CPU, while the CPU actually executes it.
 */
 
 /*
