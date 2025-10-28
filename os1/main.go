@@ -250,18 +250,32 @@ Threads:
 
 Advance thread:
 - Each new thread has its own stack but shares the process’s code, data, and heap.
-- Separate stack for each thread
+- Separate stack for each thread.
 - Each thread executes using its own stack, program counter, and registers.
 - Threads execution is controlled by PC and CPU registers not just the stack.
-- At the start, a process has only one thread, so process and thread seem to do the same work. But when multiple threads are created, their roles become distinct — the process manages resources, and the threads handle execution.
+- The main thread runs on the process’s main stack, which uses RAM on-demand.
+- A thread’s stack resides in a reserved region of the process’s virtual memory. Physical RAM is used on-demand, and its location is managed by the OS.
+
 - A thread runs when the OS scheduler assigns it to a CPU, and the CPU executes its instructions using the thread’s own program counter, stack, and registers.
 - A thread executes the program’s instructions using its own stack.
 - The CPU executes the thread, and the OS schedules which thread runs when.
+
+- At the start, a process has only one thread, so process and thread seem to do the same work. But when multiple threads are created, their roles become distinct — the process manages resources, and the threads handle execution.
+- A process doesn’t track its threads; the OS manages all thread information and scheduling, while the process owns the shared resources.
+
 - The kernel is the core part of the OS that directly interacts with hardware.
 - It manages CPU, memory, devices, and processes/threads.
 - It provides services and abstractions for the rest of the OS and applications.
 - Kernel manages hardware and core OS functions; other parts of the OS and user programs run on top of it, scheduled by the CPU via the kernel.
 - The kernel decides which thread or process runs on which CPU, while the CPU actually executes it.
+
+- In Linux, each thread’s stack has a default size of 8 MB (virtual memory reserved by the OS)
+- Linux reserves 8 MB of virtual memory per thread; a process with N threads reserves N × 8 MB VM, RAM is used on-demand.
+- Linux & macOS: ~8 MB per thread (virtual)
+- Windows: ~1 MB per thread (virtual, grows dynamically)
+
+- In Go, we can’t create threads directly. The Go runtime creates and manages threads internally. By using goroutines, we can create lightweight threads and assign them to execute different functions or programs.
+
 */
 
 /*
