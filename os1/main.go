@@ -268,6 +268,11 @@ Advance thread:
 - It provides services and abstractions for the rest of the OS and applications.
 - Kernel manages hardware and core OS functions; other parts of the OS and user programs run on top of it, scheduled by the CPU via the kernel.
 - The kernel decides which thread or process runs on which CPU, while the CPU actually executes it.
+- All threads, including the main thread, are ultimately created by the kernel.
+- Threads are executed by the CPU, but the kernel schedules them.
+- The kernel decides which thread (of which process) will run on which CPU core.
+- the kernel keeps track of all threads and knows which process each thread belongs to.
+- In modern systems, the kernel schedules and manages threads (not whole processes) for execution
 
 - In Linux, each thread’s stack has a default size of 8 MB (virtual memory reserved by the OS)
 - Linux reserves 8 MB of virtual memory per thread; a process with N threads reserves N × 8 MB VM, RAM is used on-demand.
