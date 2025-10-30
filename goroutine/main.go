@@ -136,3 +136,90 @@ In short:
     - Go Runtime acts as a mini OS inside the process.
     - Main thread runs the Go Runtime → Go Runtime runs the Main Goroutine.
 */
+
+/*
+Code segment:
+-------------
+• const p = 11
+• printHello() { ... }
+• main() { ... }
+
+(Note: `var a` is not in the code segment, because it’s a variable
+that can change during runtime.)
+
+Data segment:
+-------------
+• var a = 10
+• const p = 11
+*/
+
+/*
+Now when we run the program, here’s what happens step by step:
+
+1. The OS creates a **process** for this program.
+   This process gets its own memory layout:
+   - Code segment  → compiled Go functions
+   - Data segment  → globals, constants
+   - Heap          → dynamic memory + goroutine stacks
+   - Stack         → for main thread (default 8MB in Linux)
+
+2. The process starts with **one default OS thread** called the **main thread**.
+   This thread is managed by the **kernel**, not by Go.
+   The kernel executes threads using the CPU.
+
+3. Inside this main thread, the **Go runtime** starts automatically.
+   The runtime:
+   - Initializes the **scheduler** (for running goroutines)
+   - Initializes the **heap allocator**
+   - Initializes the **garbage collector**
+   - Creates **logical processors (P)**, by default equal to CPU cores
+
+4. The Go runtime also creates:
+   - **M (Machine)** → represents an OS thread (created by the kernel)
+   - **P (Processor)** → logical context used by the scheduler
+   - **G (Goroutine)** → lightweight function/task created by `go` keyword
+
+   Together they form the **GMP model**:
+   → Goroutines (G) run on Machines (M) using Processors (P).
+
+5. The runtime first creates:
+   - `G0` → a special internal goroutine for runtime work
+   - `Gmain` → the main goroutine that runs your `main()` function
+
+6. When `main()` runs and you write:
+      go printHello(1)
+      go printHello(2)
+      ...
+   Each `go` statement creates a **new goroutine**.
+   These goroutines are very lightweight:
+   - Each starts with ~2KB stack in the **heap** (not on the main stack)
+   - The stack can grow and shrink automatically
+   - The scheduler decides when and where each goroutine will run
+
+7. The **kernel doesn’t know about goroutines**.
+   It only knows the OS threads (M) created by Go runtime.
+   The Go scheduler runs in user space and decides which goroutine (G)
+   runs on which OS thread (M).
+
+   So the real chain is:
+   → CPU executes thread instructions
+   → Kernel schedules OS threads
+   → Go runtime scheduler runs goroutines inside those threads
+
+8. The line `time.Sleep(5 * time.Second)` keeps the main goroutine alive
+   long enough so that all other goroutines can finish their execution.
+
+9. Finally, when all goroutines are done, the program exits,
+   and the OS cleans up the process and memory.
+*/
+
+/*
+Extra summary:
+--------------
+• Main thread stack size: 8 MB (by OS)
+• Goroutine stack size: starts at ~2 KB (in heap)
+• Code & data segments are loaded once per process
+• Go runtime, heap, GC, scheduler all live inside the process
+• Kernel controls only OS threads, not goroutines
+• CPU executes instructions from threads assigned by the kernel
+*/
