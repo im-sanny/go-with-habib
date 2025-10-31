@@ -27,7 +27,17 @@ func main() {
 	fmt.Println(a, "", p)
 
 	time.Sleep(5 * time.Second)
+
+	/*
+		When you use go before a function, it runs concurrently — not one after another.
+		All goroutines start almost at the same time, and the Go scheduler decides which one runs first, next, or later.
+		This scheduling happens so fast and randomly that the order of execution changes every time you run the program.
+		The time.Sleep just keeps the main goroutine alive long enough for others to finish — it doesn’t control their order.
+		So, randomness in output = natural result of concurrency.
+	*/
 }
+
+//Process starts → Go runtime starts → main goroutine runs → other goroutines run concurrently under the runtime.
 
 /*
 Goroutine:
@@ -151,9 +161,7 @@ Data segment:
 -------------
 • var a = 10
 • const p = 11
-*/
 
-/*
 Now when we run the program, here’s what happens step by step:
 
 1. The OS creates a **process** for this program.
@@ -211,9 +219,7 @@ Now when we run the program, here’s what happens step by step:
 
 9. Finally, when all goroutines are done, the program exits,
    and the OS cleans up the process and memory.
-*/
 
-/*
 Extra summary:
 --------------
 • Main thread stack size: 8 MB (by OS)
