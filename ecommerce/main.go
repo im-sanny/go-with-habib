@@ -54,3 +54,84 @@ func main() {
 	Response Journey (Server → Client):
 	The kernel copies data from the socket's send buffer to the NIC's transmit buffer. The NIC converts binary to electromagnetic waves and sends it through the network. The router forwards it to the client, which displays the response.
 */
+
+/*
+	Visual Flow Diagram
+	CLIENT
+  │
+  │ (1) HTTP Request
+  │ (electromagnetic waves)
+  ↓
+NETWORK (Router/Internet)
+  │
+  ↓
+SERVER - Network Interface Card (NIC)
+  │
+  │ (2) NIC converts waves → binary data
+  │     Stores in NIC Receive Buffer (RAM)
+  │
+  │ (3) NIC interrupts Kernel
+  │
+  ↓
+KERNEL
+  │
+  │ (4) Kernel reads from NIC Receive Buffer
+  │     Checks port number (3000)
+  │     Copies data to Socket Receive Buffer
+  │     Marks file descriptor as "readable"
+  │
+  │ (5) Notifies Go Runtime
+  │
+  ↓
+GO RUNTIME
+  │
+  │ (6) Wakes up main goroutine
+  │
+  ↓
+MAIN GOROUTINE
+  │
+  │ (7) Calls accept() function
+  │     Requests kernel to read socket
+  │
+  ↓
+KERNEL
+  │
+  │ (8) Reads Socket Receive Buffer
+  │     Returns connection data
+  │
+  ↓
+GO RUNTIME
+  │
+  │ (9) Creates NEW GOROUTINE to handle request
+  │
+  ↓
+NEW GOROUTINE (Request Handler)
+  │
+  │ (10) Checks request route (/hello or /about)
+  │      Executes appropriate handler
+  │      Handler writes response
+  │
+  │ (11) Writes response to Socket Send Buffer
+  │
+  ↓
+KERNEL
+  │
+  │ (12) Notified of data in Send Buffer
+  │      Copies data to NIC Transmit Buffer (Ring Buffer)
+  │
+  ↓
+NIC
+  │
+  │ (13) Reads from Transmit Buffer
+  │      Converts binary → electromagnetic waves
+  │
+  ↓
+NETWORK (Router/Internet)
+  │
+  │ (14) Response travels back
+  │
+  ↓
+CLIENT
+  │
+  └─→ (15) Displays "Hello world!" or "I'm Sanny..."
+*/
