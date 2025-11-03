@@ -46,7 +46,7 @@ func main() {
 	HTTP Request-Response Flow in Go Server
 
 	Request Journey (Client → Server):
-	The client sends a request through the network. The server's NIC receives it, converts electromagnetic waves to binary, and stores it in RAM. The NIC interrupts the kernel, which copies the data to the socket's receive buffer (checking it's for port 3000). The kernel notifies the Go runtime, which wakes up the main goroutine to accept the connection.
+	The client sends a request through the network. The server's NIC receives it, converts electromagnetic waves to binary, and stores it in RAM. The NIC interrupts the kernel, which copies the data to the socket's receive buffer (checking it's for port 3000). The kernel updates the file descriptor's status to "readable" in the file table (since sockets are treated as files in Unix/Linux). The kernel notifies the Go runtime, which wakes up the main goroutine to accept the connection.
 
 	Processing:
 	The Go HTTP server creates a new goroutine to handle the request. This goroutine checks the route (/hello or /about), executes the matching handler, and writes the response to the socket's send buffer.
@@ -78,9 +78,14 @@ KERNEL
   │ (4) Kernel reads from NIC Receive Buffer
   │     Checks port number (3000)
   │     Copies data to Socket Receive Buffer
-  │     Marks file descriptor as "readable"
   │
-  │ (5) Notifies Go Runtime
+  │ (4.5) Updates File Descriptor & File Table
+  │        - Kernel maintains a file table for all open files/sockets
+  │        - Each socket has a file descriptor (integer like 3, 4, 5...)
+  │        - Kernel marks this file descriptor as "readable"
+  │        - File table entry points to socket structure
+  │
+  │ (5) Notifies Go Runtime (via file descriptor events)
   │
   ↓
 GO RUNTIME
@@ -91,13 +96,15 @@ GO RUNTIME
 MAIN GOROUTINE
   │
   │ (7) Calls accept() function
+  │     Passes file descriptor to kernel
   │     Requests kernel to read socket
   │
   ↓
 KERNEL
   │
-  │ (8) Reads Socket Receive Buffer
-  │     Returns connection data
+  │ (8) Uses file descriptor to locate socket in file table
+  │     Reads Socket Receive Buffer
+  │     Returns connection data (with new file descriptor for this connection)
   │
   ↓
 GO RUNTIME
@@ -107,11 +114,13 @@ GO RUNTIME
   ↓
 NEW GOROUTINE (Request Handler)
   │
-  │ (10) Checks request route (/hello or /about)
+  │ (10) Uses file descriptor for this connection
+  │      Reads HTTP request data
+  │      Checks request route (/hello or /about)
   │      Executes appropriate handler
   │      Handler writes response
   │
-  │ (11) Writes response to Socket Send Buffer
+  │ (11) Writes response to Socket Send Buffer (via file descriptor)
   │
   ↓
 KERNEL
