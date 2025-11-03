@@ -14,11 +14,11 @@ func aboutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	mux := http.NewServeMux()
+	mux := http.NewServeMux() //router
 
-	mux.HandleFunc("/hello", helloHandler)
+	mux.HandleFunc("/hello", helloHandler) //route
 
-	mux.HandleFunc("/about", aboutHandler)
+	mux.HandleFunc("/about", aboutHandler) //route
 
 	fmt.Println("Server running on :3000")
 
@@ -27,6 +27,17 @@ func main() {
 		fmt.Println("Error starting on the server", err)
 	}
 }
+
+/*
+-	A file descriptor is an integer that represents an open file.
+- File descriptors are integers that start from 0 — where 0, 1, and 2 represent stdin, stdout, and stderr.
+- A socket is a communication endpoint used to send and receive data over a network.
+- In Unix and Linux, everything is treated as a file — meaning all input/output operations are handled in the same way.
+- When a server starts, one of the first things it does is create a socket to listen for incoming connections.
+
+Short version of the process:
+ Client request → NIC (waves to binary) → Kernel (routes to port 3000) → Go runtime (creates goroutine) → Handler executes (writes response) → Kernel → NIC (binary to waves) → Client receives response.
+*/
 
 /*
 	When a client sends an HTTP request to the server, the request first travels through the network and reaches the server’s Network Interface Card (NIC). The NIC converts the incoming electromagnetic signals into binary data and stores it temporarily in the RAM, specifically inside the NIC receive buffer.
