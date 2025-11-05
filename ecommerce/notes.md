@@ -1,17 +1,17 @@
     ┌──────────────────────────────────────────────┐
-    │                  CLIENT                      │
+    │           CLIENT                             │
     │  Browser → Sends HTTP request (GET /hello)   │
     └──────────────┬───────────────────────────────┘
                    │
                    ▼
     ┌──────────────────────────────────────────────┐
-    │              NETWORK (Router etc.)           │
+    │           NETWORK (Router etc.)              │
     │  Forwards packet to server’s IP:3000         │
     └──────────────┬───────────────────────────────┘
                    │
                    ▼
     ┌──────────────────────────────────────────────┐
-    │         HARDWARE LAYER (Server NIC)          │
+    │           HARDWARE LAYER (Server NIC)        │
     │  - Converts EM signals → binary              │
     │  - Stores data in NIC receive buffer         │
     │  - Interrupts the kernel                     │
@@ -27,7 +27,7 @@
                    │
                    ▼
     ┌──────────────────────────────────────────────┐
-    │              GO RUNTIME LAYER                │
+    │           GO RUNTIME LAYER                   │
     │  - Main goroutine blocked in Accept()        │
     │  - Wakes up when data available              │
     │  - Accepts new conn → spawns handler goroutine│
@@ -51,7 +51,7 @@
                    │
                    ▼
     ┌──────────────────────────────────────────────┐
-    │                  CLIENT                      │
+    │           CLIENT                             │
     │  - Receives response                         │
     │  - Browser renders "Hello world!"            │
     └──────────────────────────────────────────────┘
