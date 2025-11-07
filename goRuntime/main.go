@@ -27,7 +27,7 @@ func main() {
 }
 
 /*
-	Go Runtime:
+Go Runtime:
 - Go runtime: The Go runtime is the core engine that powers how Go programs run.
 It’s like a mini operating system inside your Go program, managing everything that happens when your code executes — especially concurrency, memory, and scheduling.
 
@@ -69,7 +69,6 @@ It doesn’t create a special thread for GC — instead, GC runs on the existing
 GC works concurrently with other goroutines to clean memory in the background.
 
 Go runtime uses the G-P-M model to schedule goroutines on OS threads.
-
 Goroutine (G) → Processor (P) → OS Thread (M) → CPU
 
 G = your Go code/task
@@ -77,5 +76,34 @@ P = scheduler context/run queue
 M = real OS thread
 CPU = executes M
 
+g = goroutine
+p = logical processors
+m = os thread/machine thread
+
+Each P (logical processor) has one local run queue, and that queue can hold up to 256 goroutines.
+
+There are two types of run queues:
+
+Local run queue – one per P (fixed size, 256 slots).
+Global run queue – shared by all Ps, dynamic in size (limited only by available memory).
+
+
+Suppose I have 4 logical processors (P1–P4).
+Each logical processor has one local run queue, and each queue has 256 slots.
+Each slot can hold one goroutine, so up to 256 goroutines can be queued per P (if that many exist).
+
+Each P is attached to an OS thread (M).
+The OS threads are what the CPU cores actually execute.
+
+When a logical processor runs, it picks goroutines from its local run queue one by one and executes them.
+If multiple CPU cores are available, then multiple Ps (and thus multiple goroutines) can run in parallel.
+If there’s only one CPU core, they run concurrently (time-shared).
+
+Now about the global run queue:
+If all 4 logical processors (P1–P4) have their local run queues full (256 slots each) and a new goroutine is created, there’s no space left locally to place it.
+In that case, the extra goroutine is placed into the global run queue.
+
+Later, if one of the processors finds its local run queue empty, it will first try to steal goroutines from the local queues of other processors (this is called work stealing).
+If it can’t steal any, it will then take goroutines from the global run queue (if available) and put them into its local queue to execute.
 
 */
