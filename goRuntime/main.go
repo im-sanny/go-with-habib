@@ -27,10 +27,6 @@ func main() {
 }
 
 /*
-Go Runtime:
-- Go runtime: The Go runtime is the core engine that powers how Go programs run.
-It’s like a mini operating system inside your Go program, managing everything that happens when your code executes — especially concurrency, memory, and scheduling.
-
 - When the OS boots, RAM is divided into two main parts — kernel space (for the operating system) and user space (for applications).
 - Process and process-related things run from and stay in user space.
 - A system call (syscall) is the way a user-space process requests a service from the kernel. Since user-space programs can’t directly access hardware or kernel functions (for safety), they have to ask the kernel to do it for them — and that’s done through a system call.
@@ -39,14 +35,42 @@ It’s like a mini operating system inside your Go program, managing everything 
 - A process runs isolated; it doesn’t know anything about what’s around it.
 - Kernel manages and coordinates everything happening in user space.
 
+
+Go Runtime:
+- Go runtime: The Go runtime is the core engine of Go that manages how Go programs run. It acts like a mini operating system inside your program — handling goroutine scheduling, memory management, garbage collection, and system interactions such as network I/O and threading.
+
+One liner: The Go runtime is the core engine of Go that manages goroutines, memory, scheduling, and system-level tasks within a Go program.
+
+- Go runtime runs first when we execute Go code — even before any init() function.
+
 - The OS executes the startup assembly code (part of Go’s runtime). That code initializes the Go runtime. Then the runtime executes all init() functions and finally your main().
 
-go runtime will do:
-1. initialize go schedular
-2. go runtime will syscall to kernel then it'll request the kernel for creating a epoll_create for it.
+- Go code  execution chain: CPU → OS → Process → Main Thread → Go Runtime → Go Code
+
+Go Runtime Does:
+1. Initialize Go Scheduler – sets up goroutine scheduling, logical processors (P), and OS threads (M).
+2. Syscalls & OS Integration – makes syscalls to the kernel, e.g., request epoll_create for network polling.
+3. Epoll Management – handles epoll_create, epoll_ctl, and epoll_wait.
+4. Garbage Collection (GC) Setup – initializes and runs the garbage collector.
+5. Stack Management – manages goroutine stack growth and shrinking.
+6. Timers & Concurrency Primitives – sets up timers and basic primitives needed for goroutines.
+
 go runtime -> syscall -> kernel -> epoll_create
-3. epoll: epoll is a feature of the kernel(os), epoll does 3 operation: epoll_create, epoll_ctl, epoll_wait
-4. setup GC
+epoll: A Linux kernel mechanism that efficiently monitors multiple file descriptors and notifies when I/O events (like read/write) are ready.
+
+
+Imagine the kernel creates 3 processes, and each has 2 threads — total 6 threads.
+The CPU (not the kernel) runs them, switching quickly between threads.
+Suppose one thread wants to read from a file.
+1. The thread makes a system call to the kernel.
+2. The kernel checks its file descriptor table and gives back a file descriptor (FD) — a small ID representing the file.
+3. If the file’s data isn’t ready, the thread uses epoll:
+- It calls epoll_ctl() to tell the kernel “I’m waiting for this FD.”
+- Then calls epoll_wait() — and the kernel makes the thread sleep.
+4. While that thread sleeps, the CPU runs other threads.
+5. When the kernel sees the file is ready, it wakes the thread, and epoll_wait() returns.
+6. The thread then calls read() to get the actual data.
+
 
 Suppose the kernel created 3 processes, and each process has 2 threads — so in total there are 6 threads. The kernel itself doesn’t run them; the CPU does. If it’s a 1-core CPU with 2 logical processors, these 2 logical CPUs can run the 6 threads concurrently (switching between them very fast).
 Now, one of these threads wants to read a file. It makes a system call to the kernel. The kernel checks the file descriptor table and returns a file descriptor (FD) — a token/ID that represents the file. This FD verifies the thread’s request and tells the kernel exactly which file to access.
