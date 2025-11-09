@@ -75,17 +75,17 @@ Suppose one thread wants to read from a file.
 - epoll is a Linux system call that helps programs efficiently monitor multiple file descriptors (like network sockets, files, pipes) to see if they're ready for I/O operations (reading or writing).
 
 Go Runtime:
-# At startup, Go runtime creates an epoll instance and starts a Netpoller Thread to watch sockets.
-# When a goroutine tries to read from a socket but the data isn’t ready:
-	1. Go parks the goroutine (puts it aside).
-	2. Registers the socket’s file descriptor with epoll (epoll_ctl) so the kernel will notify when data is ready.
-	3. The OS thread running that goroutine is now free to do other work.
-# The Netpoller Thread waits in epoll_wait() until the kernel signals that data is ready.
-# When data is ready, the runtime:
-	1. Finds which goroutines were waiting for those sockets.
-	2. Marks them runnable.
-	3. Schedules them to continue their I/O.
-This way, thousands of goroutines can wait for I/O without blocking OS threads, making Go efficient for concurrent connections.
+1. Go runtime starts → It initializes the scheduler (M, P, G model).
+2. It then creates an epoll instance (via `epoll_create1` syscall).
+3. It also starts a separate OS thread called the Netpoller Thread.
+   * This thread runs epoll_wait() in a loop to watch for network I/O events.
+4. Now when any goroutine tries to read/write on a socket that isn’t ready:
+   * The Go runtime calls epoll_ctl() (syscall to kernel) to register that socket’s FD with epoll.
+   * Then it parks the goroutine (makes it sleep).
+   * The OS thread that was running that goroutine becomes free for other goroutines.
+5. When the kernel detects data ready on that FD, it wakes the Netpoller Thread via epoll_wait().
+6. The Netpoller Thread then notifies the Go runtime that “FD 7 is ready.”
+7. The runtime then marks the waiting goroutine runnable again, schedules it to run, and when it resumes, the goroutine does the actual read() syscall to fetch the data.
 
 Netpoller Thread: The Netpoller Thread in Go is basically a special OS thread that the Go runtime creates to efficiently handle network I/O using epoll (on Linux) or similar mechanisms on other OSes.
 
@@ -97,14 +97,10 @@ GC works concurrently with other goroutines to clean memory in the background.
 Go runtime uses the G-P-M model to schedule goroutines on OS threads.
 Goroutine (G) → Processor (P) → OS Thread (M) → CPU
 
-G = your Go code/task
-P = scheduler context/run queue
-M = real OS thread
+G = your Go code/task/ goroutine
+P = scheduler context/run queue/logical processors
+M = real OS thread/machine thread
 CPU = executes M
-
-g = goroutine
-p = logical processors
-m = os thread/machine thread
 
 Each P (logical processor) has one local run queue, and that queue can hold up to 256 goroutines.
 
@@ -113,7 +109,7 @@ There are two types of run queues:
 Local run queue – one per P (fixed size, 256 slots).
 Global run queue – shared by all Ps, dynamic in size (limited only by available memory).
 
-
+Go Scheduler:
 Suppose I have 4 logical processors (P1–P4).
 Each logical processor has one local run queue, and each queue has 256 slots.
 Each slot can hold one goroutine, so up to 256 goroutines can be queued per P (if that many exist).
