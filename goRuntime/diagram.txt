@@ -1,0 +1,289 @@
+Go HTTP server workflow diagram ->
+
+Quick version:
++----------------------+
+|  Go Runtime Startup  |
++----------+-----------+
+           |
+           v
++----------------------+
+|  Main Thread & Stack |
++----------+-----------+
+           |
+           v
++----------------------+
+|  Main Goroutine (G)  |
+|  Scheduler: M-P-G    |
++----------+-----------+
+           |
+           v
++-----------------------------+
+|  main() executes -> Router  |
+|  mux := http.NewServeMux()  |
+|  mux.HandleFunc()           |
++----------+------------------+
+           |
+           v
++-----------------------------+
+|  http.ListenAndServe()      |
+|  -> srv.Serve(listener)     |
+|  -> Infinite loop (Accept)  |
++----------+------------------+
+           |
+           v
++---------------------------------------------+
+|  l.Accept() via netpoll + epoll_ctl()       |
+|  Kernel waits for socket ready (FD=5)       |
+|  When ready: epoll_wait() wakes Go runtime  |
++----------+----------------------------------+
+           |
+           v
++---------------------------------------------+
+|  New goroutine -> go c.serve(connCtx)       |
+|  Reads socket data & calls handler          |
++----------+----------------------------------+
+           |
+           v
++---------------------------------------------+
+|  Handler executes                           |
+|  fmt.Fprintln(w, "About page")              |
+|  -> syscall.Write() -> kernel send buffer   |
++----------+----------------------------------+
+           |
+           v
++---------------------------------------------+
+|  Kernel packages TCP/IP                     |
+|  -> NIC TX buffer -> DMA -> Network         |
+|  -> Router/Switch -> Client                 |
++---------------------------------------------+
+
+Summery flow:
+Go start → main goroutine → mux setup → ListenAndServe
+→ Accept() → epoll wait → connection ready → new goroutine
+→ handler → syscall.Write → kernel send → NIC transmit → client
+
+
+Detailed Version (Full Technical Flow):
+                ┌────────────────────────────────────┐
+                │        Go Runtime Startup          │
+                │ init() executes, memory setup done │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │   Main Thread & Stack Created       │
+                │ OS thread + stack for runtime code  │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │   Main Goroutine Created (2KB)      │
+                │ Heap allocated, queued to scheduler │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Scheduler Model                              │
+        │ M = Thread | P = Processor | G = Goroutine   │
+        │ One active P executes main goroutine         │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │ main() executes                    │
+                │ stack frame created for main()     │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │ http.NewServeMux()                 │
+                │ Creates router (ServeMux) object   │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │ mux.HandleFunc()                   │
+                │ Registers path→handler map         │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+                ┌────────────────────────────────────┐
+                │ http.ListenAndServe()              │
+                │ Creates listener + calls Serve()   │
+                └────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Serve() Infinite Loop                        │
+        │ 1. Calls l.Accept()                          │
+        │ 2. For each connection → new goroutine       │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ l.Accept() via netpoll + epoll_ctl()         │
+        │ Kernel registers socket for events           │
+        │ (FD created, e.g., FD=5)                     │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Kernel waits until connection arrives        │
+        │ NIC interrupt → kernel marks FD ready        │
+        │ epoll_wait() wakes Go netpoller              │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Go runtime wakes goroutine waiting on FD     │
+        │ Scheduler puts it in Local Run Queue         │
+        │ Processor (P) binds thread (M) → executes G  │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ go c.serve(connCtx)                          │
+        │ New goroutine spawned (new stack on heap)    │
+        │ Handles HTTP request-response                │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ ServeMux route matching                      │
+        │ e.g., /about → aboutHandler()                │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Handler executes                             │
+        │ fmt.Fprintln(w, "About page")                │
+        │ ResponseWriter.Write() → syscall.Write()     │
+        │ Data copied to kernel send buffer            │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ Kernel network stack                         │
+        │ Packages TCP/IP → NIC TX ring buffer         │
+        │ NIC uses DMA to read data                    │
+        └──────────────────────────────────────────────┘
+                                 │
+                                 ▼
+        ┌──────────────────────────────────────────────┐
+        │ NIC transmits packets                        │
+        │ → Network → Routers → Client NIC             │
+        │ → Client OS → Browser renders response       │
+        └──────────────────────────────────────────────┘
+
+Full Flow Summary:
+Go runtime init
+→ main thread + stack
+→ main goroutine
+→ scheduler (M, P, G)
+→ main()
+→ ServeMux + HandleFunc
+→ ListenAndServe
+→ Serve() infinite loop
+→ Accept() via epoll
+→ kernel socket ready
+→ netpoll wakeup
+→ new goroutine -> serve(conn)
+→ mux route match
+→ handler executes
+→ syscall.Write
+→ kernel send buffer
+→ NIC transmit via DMA
+→ client receives and displays response
+
+
+Layered Flow: Go HTTP Server → Kernel → NIC
+┌────────────────────────────────────────────────────────────┐
+│                       USER SPACE                           │
+│      (Go Runtime + Your Application Code)                  │
+└────────────────────────────────────────────────────────────┘
+          │
+          │ 1. Runtime Initialization
+          │    - Go runtime sets up memory, GC, scheduler.
+          │    - Creates main thread + stack + main goroutine (G0).
+          │
+          │ 2. Scheduler Model (M, P, G)
+          │    - M = OS thread
+          │    - P = Processor context
+          │    - G = Goroutine (lightweight thread)
+          │    - P picks Gs to run on Ms.
+          │
+          │ 3. main() Function
+          │    - Stack frame created.
+          │    - Application code begins.
+          │
+          │ 4. Server Setup
+          │    - mux := http.NewServeMux()
+          │    - mux.HandleFunc("/about", aboutHandler)
+          │
+          │ 5. http.ListenAndServe(":8080", mux)
+          │    - Creates listener (socket FD).
+          │    - Calls srv.Serve(listener).
+          │
+          │ 6. Serve() Infinite Loop
+          │    - for { conn, _ := l.Accept() ... }
+          │    - Each Accept() waits for kernel to signal readiness.
+          │
+          ▼
+┌────────────────────────────────────────────────────────────┐
+│                       KERNEL SPACE                         │
+│          (System Calls, epoll, socket handling)             │
+└────────────────────────────────────────────────────────────┘
+          │
+          │ 7. netpoll + epoll Integration
+          │    - Go runtime syscalls epoll_create.
+          │    - Registers socket FD using epoll_ctl.
+          │
+          │ 8. Kernel Waits for Events
+          │    - epoll_wait() blocks inside kernel.
+          │    - When a client connects → kernel marks FD readable.
+          │
+          │ 9. Interrupt Handling
+          │    - NIC generates interrupt (RX ready).
+          │    - Kernel network stack reads packet into memory.
+          │    - Marks corresponding socket FD as ready.
+          │
+          │10. Go Runtime Wakes
+          │    - Kernel returns from epoll_wait.
+          │    - Runtime netpoller wakes sleeping goroutine.
+          │
+          │11. Accept() Returns
+          │    - Go gets a connection (new FD).
+          │    - Spawns new goroutine: go c.serve(connCtx)
+          │
+          │12. Handler Execution
+          │    - aboutHandler(w, r)
+          │    - fmt.Fprintln(w, "About page")
+          │    - Internally: syscall.Write() → kernel.
+          │
+          │13. Kernel Sends Data
+          │    - Data copied to kernel send buffer.
+          │    - Network stack wraps data in TCP/IP headers.
+          │
+          ▼
+┌────────────────────────────────────────────────────────────┐
+│                        HARDWARE                            │
+│             (NIC, DMA, Network Transmission)                │
+└────────────────────────────────────────────────────────────┘
+          │
+          │14. NIC Transmission
+          │    - Kernel places packet into NIC TX ring buffer.
+          │    - NIC uses DMA to read packet directly from memory.
+          │
+          │15. Physical Transmission
+          │    - NIC converts data → electrical/optical signals.
+          │    - Sends through cable to switch/router → client.
+          │
+          │16. Client Reception
+          │    - Client NIC receives packet.
+          │    - Client kernel → browser → displays response.
+          │
+          ▼
+┌────────────────────────────────────────────────────────────┐
+│                    CYCLE COMPLETED                         │
+│  Go runtime → Kernel → NIC → Client → Back to Go runtime   │
+└────────────────────────────────────────────────────────────┘
