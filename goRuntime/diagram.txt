@@ -71,14 +71,14 @@ Detailed Version (Full Technical Flow):
                                  │
                                  ▼
                 ┌────────────────────────────────────┐
-                │   Main Thread & Stack Created       │
-                │ OS thread + stack for runtime code  │
+                │   Main Thread & Stack Created      │
+                │ OS thread + stack for runtime code │
                 └────────────────────────────────────┘
                                  │
                                  ▼
                 ┌────────────────────────────────────┐
-                │   Main Goroutine Created (2KB)      │
-                │ Heap allocated, queued to scheduler │
+                │   Main Goroutine Created (2KB)     │
+                │ Heap allocated, queued to scheduler│
                 └────────────────────────────────────┘
                                  │
                                  ▼
@@ -231,7 +231,7 @@ Layered Flow: Go HTTP Server → Kernel → NIC
           ▼
 ┌────────────────────────────────────────────────────────────┐
 │                       KERNEL SPACE                         │
-│          (System Calls, epoll, socket handling)             │
+│          (System Calls, epoll, socket handling)            │
 └────────────────────────────────────────────────────────────┘
           │
           │ 7. netpoll + epoll Integration
@@ -267,7 +267,7 @@ Layered Flow: Go HTTP Server → Kernel → NIC
           ▼
 ┌────────────────────────────────────────────────────────────┐
 │                        HARDWARE                            │
-│             (NIC, DMA, Network Transmission)                │
+│             (NIC, DMA, Network Transmission)               │
 └────────────────────────────────────────────────────────────┘
           │
           │14. NIC Transmission

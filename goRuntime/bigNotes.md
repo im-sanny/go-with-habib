@@ -11,18 +11,9 @@ While the thread sleeps, the CPU runs other threads. When the kernel finally get
 
 - Netpoller Thread: The netpoller thread is an internal Go runtime mechanism that uses OS-level async I/O APIs to monitor network sockets for readiness, enabling efficient, scalable, non-blocking I/O while allowing Go code to use simple blocking-style syntax
 
-Short version:
-At startup, Go runtime creates an epoll instance and starts a Netpoller Thread to watch sockets.
-When a goroutine tries to read from a socket but the data isn’t ready:
-	1. Go parks the goroutine (puts it aside).
-	2. Registers the socket’s file descriptor with epoll (epoll_ctl) so the kernel will notify when data is ready.
-	3. The OS thread running that goroutine is now free to do other work.
-The Netpoller Thread waits in epoll_wait() until the kernel signals that data is ready.
-When data is ready, the runtime:
-	1. Finds which goroutines were waiting for those sockets.
-	2. Marks them runnable.
-	3. Schedules them to continue their I/O.
-This way, thousands of goroutines can wait for I/O without blocking OS threads, making Go efficient for concurrent connections.
-
-
-
+- Short version:
+  At startup, Go runtime creates an epoll instance and starts a Netpoller Thread to watch sockets.
+  When a goroutine tries to read from a socket but the data isn’t ready: 1. Go parks the goroutine (puts it aside). 2. Registers the socket’s file descriptor with epoll (epoll_ctl) so the kernel will notify when data is ready. 3. The OS thread running that goroutine is now free to do other work.
+  The Netpoller Thread waits in epoll_wait() until the kernel signals that data is ready.
+  When data is ready, the runtime: 1. Finds which goroutines were waiting for those sockets. 2. Marks them runnable. 3. Schedules them to continue their I/O.
+  This way, thousands of goroutines can wait for I/O without blocking OS threads, making Go efficient for concurrent connections.
