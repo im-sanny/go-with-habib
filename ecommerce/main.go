@@ -25,34 +25,20 @@ type Product struct {
 var productList []Product
 
 func getProducts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")                 // anyone can now access this api
-	w.Header().Set("Content-Type", "application/json")                 //sets the response type to JSON, so the client knows how to read and parse it properly.
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Name") // for this to work i need to set a custom header from frontend code
-
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(200)
-		return
-	}
+	handleCors(w)
+	handlePreflightReq(w, r)
 
 	if r.Method != http.MethodGet { //r.Method = post, put, patch, delete
 		http.Error(w, "please give me GET request", 400)
 		return
 	}
 
-	encoder := json.NewEncoder(w)
-	encoder.Encode(productList)
+	sendData(w, productList, 200)
 }
 
 func createProduct(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Method", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(200)
-		return
-	}
+	handleCors(w)
+	handlePreflightReq(w, r)
 
 	if r.Method != "POST" { //r.Method = post, put, patch, delete
 		http.Error(w, "please give me POST request", 400)
@@ -71,9 +57,26 @@ func createProduct(w http.ResponseWriter, r *http.Request) {
 	newProduct.ID = len(productList) + 1
 
 	productList = append(productList, newProduct)
-	w.WriteHeader(201)
+	sendData(w, newProduct, 201)
+}
+
+func handleCors(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Name") // for this to work i need to set a custom header from frontend code
+	w.Header().Set("Content-Type", "application/json")
+}
+
+func handlePreflightReq(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+	}
+}
+
+func sendData(w http.ResponseWriter, data interface{}, statusCode int) {
+	w.WriteHeader(statusCode)
 	encoder := json.NewEncoder(w)
-	encoder.Encode(productList)
+	encoder.Encode(data)
 }
 
 func main() {
@@ -154,9 +157,10 @@ func init() {
 	CORS = cross origin resource sharing
 	It’s a security feature in web browsers that controls which websites can request data from your server.
 
-	Options is one of the http methods, and by using options we can make preflight request.
 
-	Only browser does preflight request no one else.
-	preflight =
+	OPTIONS is an HTTP method.
+ 	preflightReq = Browser automatically sends a preflight request (using the OPTIONS method) before making certain cross-origin requests. This request checks if the server allows it by verifying the CORS headers in the response.
+
+	SOLID's S is single responsibility principle that means one func should do one particular job, we'll discover more of principle later.
 
 */
