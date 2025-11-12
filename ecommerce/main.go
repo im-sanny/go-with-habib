@@ -25,8 +25,14 @@ type Product struct {
 var productList []Product
 
 func getProducts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*") // anyone can now access this api
-	w.Header().Set("Content-Type", "application/json") //sets the response type to JSON, so the client knows how to read and parse it properly.
+	w.Header().Set("Access-Control-Allow-Origin", "*")                 // anyone can now access this api
+	w.Header().Set("Content-Type", "application/json")                 //sets the response type to JSON, so the client knows how to read and parse it properly.
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Name") // for this to work i need to set a custom header from frontend code
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(200)
+		return
+	}
 
 	if r.Method != http.MethodGet { //r.Method = post, put, patch, delete
 		http.Error(w, "please give me GET request", 400)
@@ -147,5 +153,10 @@ func init() {
 
 	CORS = cross origin resource sharing
 	It’s a security feature in web browsers that controls which websites can request data from your server.
+
+	Options is one of the http methods, and by using options we can make preflight request.
+
+	Only browser does preflight request no one else.
+	preflight =
 
 */
