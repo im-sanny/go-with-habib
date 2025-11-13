@@ -1,51 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"ecommerce/cmd"
 )
 
 func main() {
-	mux := http.NewServeMux() //router
-
-	mux.Handle("GET /products", http.HandlerFunc(getProducts))
-	mux.Handle("POST /create-product", http.HandlerFunc(createProduct))
-
-	fmt.Println("Server running on :3000")
-
-	globalRouter := globalRouter(mux)
-
-	err := http.ListenAndServe(":3000", globalRouter)
-	if err != nil {
-		fmt.Println("Error starting the server", err)
-	}
-
-}
-
-func init() {
-	prod1 := Product{
-		ID:          1,
-		Title:       "Fresh Apples",
-		Description: "Crisp and sweet red delicious apples",
-		Price:       3.99,
-		ImgUrl:      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRST6XqAF8KkLF0Xqj3vcyfESa4KCCj-Jswhg&s",
-	}
-	prod2 := Product{
-		ID:          2,
-		Title:       "Ripe Bananas",
-		Description: "Fresh yellow bananas, perfect for smoothies",
-		Price:       1.99,
-		ImgUrl:      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRST6XqAF8KkLF0Xqj3vcyfESa4KCCj-Jswhg&s",
-	}
-	prod3 := Product{
-		ID:          3,
-		Title:       "Sweet Oranges",
-		Description: "Juicy oranges packed with vitamin C",
-		Price:       4.50,
-		ImgUrl:      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRST6XqAF8KkLF0Xqj3vcyfESa4KCCj-Jswhg&s",
-	}
-
-	productList = append(productList, prod1, prod2, prod3)
+	cmd.Serve()
 }
 
 /*
