@@ -1,45 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 )
-
-type Product struct {
-	ID          int
-	Title       string
-	Description string
-	Price       float64
-	ImgUrl      string
-}
-
-var productList []Product
-
-func getProducts(w http.ResponseWriter, r *http.Request) {
-	sendData(w, productList, 200)
-}
-
-func createProduct(w http.ResponseWriter, r *http.Request) {
-	var newProduct Product
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&newProduct)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "please give me valid json", 400)
-		return
-	}
-
-	newProduct.ID = len(productList) + 1
-	productList = append(productList, newProduct)
-	sendData(w, newProduct, 201)
-}
-
-func sendData(w http.ResponseWriter, data interface{}, statusCode int) {
-	w.WriteHeader(statusCode)
-	encoder := json.NewEncoder(w)
-	encoder.Encode(data)
-}
 
 func main() {
 	mux := http.NewServeMux() //router
@@ -82,23 +46,6 @@ func init() {
 	}
 
 	productList = append(productList, prod1, prod2, prod3)
-}
-
-func globalRouter(mux *http.ServeMux) http.Handler {
-	handleAllReq := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Method", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Name") // for this to work i need to set a custom header from frontend code
-		w.Header().Set("Content-Type", "application/json")
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(200)
-			return
-		}
-		mux.ServeHTTP(w, r)
-
-	}
-	return http.HandlerFunc(handleAllReq)
 }
 
 /*
