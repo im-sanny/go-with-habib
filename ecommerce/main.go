@@ -34,6 +34,6 @@ OPTIONS is an HTTP method.
 
 preflightReq = Browser automatically sends a preflight request (using the OPTIONS method) before making certain cross-origin requests. This request checks if the server allows it by verifying the CORS headers in the response.
 
-SOLID's S is single responsibility principle that means one func should do one particular job, we'll discover more of principle later.
+SOLID's S is single responsibility principle that means one func should do one particular job, in order to maintain and do further update its the best choice, we'll discover more of principle later.
 
 */
