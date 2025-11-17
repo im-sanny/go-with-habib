@@ -1,4 +1,4 @@
-package globalRouter
+package middleware
 
 import "net/http"
 

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"ecommerce/globalRouter"
 	"ecommerce/middleware"
 	"fmt"
 	"net/http"
@@ -16,7 +15,7 @@ func Serve() {
 
 	initRoutes(mux, manager)
 
-	globalRouter := globalRouter.GlobalRouter(mux)
+	globalRouter := middleware.GlobalRouter(mux)
 
 	fmt.Println("Server running on :3000")
 	err := http.ListenAndServe(":3000", globalRouter)
