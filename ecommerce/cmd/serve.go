@@ -3,12 +3,15 @@ package cmd
 import (
 	"ecommerce/globalRouter"
 	"ecommerce/handlers"
+	"ecommerce/middleware"
 	"fmt"
 	"net/http"
 )
 
 func Serve() {
 	mux := http.NewServeMux() //router
+
+	mux.Handle("GET /name", middleware.Logger(http.HandlerFunc(handlers.Test)))
 
 	mux.Handle("GET /products", http.HandlerFunc(handlers.GetProducts))
 	mux.Handle("POST /products", http.HandlerFunc(handlers.CreateProduct))
