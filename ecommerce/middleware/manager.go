@@ -7,7 +7,7 @@ import (
 type Middleware func(http.Handler) http.Handler
 
 type Manager struct {
-	globalMiddlewares []Middleware
+	globalMiddlewares []Middleware //[CorsWithPreflight, Logger, Bruh]
 }
 
 func NewManager() *Manager {
@@ -20,17 +20,34 @@ func (mngr *Manager) Use(middlewares ...Middleware) {
 	mngr.globalMiddlewares = append(mngr.globalMiddlewares, middlewares...)
 }
 
-func (mngr *Manager) With(next http.Handler, middlewares ...Middleware) http.Handler {
+func (mngr *Manager) With(handler http.Handler, middlewares ...Middleware) http.Handler {
 
-	n := next
+	h := handler
 
+	// middlewares = [third]
+	// h = Third(Test)
 	for _, middleware := range middlewares {
-		middleware(n)
+		middleware(h)
 	}
 
-	for _, globalMiddleware := range mngr.globalMiddlewares {
-		n = globalMiddleware(n)
+	//[Logger, Bruh, CorsWithPreflight]
+	// h = CorsWithPreflight(bruh(logger(mux)))
+	// for _, globalMiddleware := range mngr.globalMiddlewares {
+	// 	h = globalMiddleware(h)
+	// }
+
+	return h
+}
+
+func (mngr *Manager) WrapMux(handler http.Handler) http.Handler {
+
+	h := handler
+
+	//[CorsWithPreflight, Bruh, Logger]
+	// h = Logger(bruh(CorsWithPreflight(mux)))
+	for _, middleware := range mngr.globalMiddlewares {
+		middleware(h)
 	}
 
-	return n
+	return h
 }

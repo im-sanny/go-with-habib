@@ -9,16 +9,32 @@ import (
 func Serve() {
 	manager := middleware.NewManager()
 
-	manager.Use(middleware.Logger, middleware.Bruh)
-
 	mux := http.NewServeMux() //router
+
+	// CorsWithPreflight(bruh(logger(mux)))
+	// wrappedMux := manager.WrapMux(
+	// 	mux,
+	// 	middleware.Logger,
+	// 	middleware.Bruh,
+	// 	middleware.CorsWithPreflight,
+	// )
+
+	// var globalMiddlewares []middleware.Middleware
+	// globalMiddlewares = append(
+	// 	globalMiddlewares,
+	// )
+
+	manager.Use(
+		middleware.CorsWithPreflight,
+		middleware.Bruh,
+		middleware.Logger,
+	)
+	wrappedMux := manager.WrapMux(mux)
 
 	initRoutes(mux, manager)
 
-	globalRouter := middleware.GlobalRouter(mux)
-
 	fmt.Println("Server running on :3000")
-	err := http.ListenAndServe(":3000", globalRouter)
+	err := http.ListenAndServe(":3000", wrappedMux)
 	if err != nil {
 		fmt.Println("Error starting the server", err)
 	}
