@@ -21,32 +21,23 @@ func (mngr *Manager) Use(middlewares ...Middleware) {
 }
 
 func (mngr *Manager) With(handler http.Handler, middlewares ...Middleware) http.Handler {
-
 	h := handler
 
 	// middlewares = [third]
 	// h = Third(Test)
 	for _, middleware := range middlewares {
-		middleware(h)
+		h = middleware(h)
 	}
-
-	//[Logger, Bruh, CorsWithPreflight]
-	// h = CorsWithPreflight(bruh(logger(mux)))
-	// for _, globalMiddleware := range mngr.globalMiddlewares {
-	// 	h = globalMiddleware(h)
-	// }
-
 	return h
 }
 
 func (mngr *Manager) WrapMux(handler http.Handler) http.Handler {
-
 	h := handler
 
-	//[CorsWithPreflight, Bruh, Logger]
-	// h = Logger(bruh(CorsWithPreflight(mux)))
+	//[Cors, Preflight, Logger]
+	// h = Logger(preflight(cors(mux)))
 	for _, middleware := range mngr.globalMiddlewares {
-		middleware(h)
+		h = middleware(h)
 	}
 
 	return h
