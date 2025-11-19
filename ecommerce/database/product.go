@@ -10,6 +10,44 @@ type Product struct {
 	ImgUrl      string
 }
 
+func Store(p Product) Product {
+	p.ID = len(productList) + 1
+	productList = append(productList, p)
+	return p
+}
+
+func List() []Product {
+	return productList
+}
+
+func Get(productID int) *Product {
+	for _, product := range productList {
+		if product.ID == productID {
+			return &product
+		}
+	}
+	return nil
+}
+
+func Update(product Product) {
+	for idx, p := range productList {
+		if p.ID == product.ID {
+			productList[idx] = product
+		}
+	}
+}
+
+func Delete(productID int) {
+	var tempList []Product // [a, b]
+
+	for idx, p := range productList { // [a, b, c]
+		if p.ID != productID {
+			tempList[idx] = p
+		}
+	}
+	productList = tempList
+}
+
 func init() {
 	prod1 := Product{
 		ID:          1,
@@ -33,5 +71,5 @@ func init() {
 		ImgUrl:      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRST6XqAF8KkLF0Xqj3vcyfESa4KCCj-Jswhg&s",
 	}
 
-	ProductList = append(ProductList, prod1, prod2, prod3)
+	productList = append(productList, prod1, prod2, prod3)
 }
