@@ -2,9 +2,11 @@ package main
 
 import (
 	"ecommerce/cmd"
+	"ecommerce/config"
 )
 
 func main() {
+	config.GetConfig()
 	cmd.Serve()
 }
 
