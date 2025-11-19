@@ -1,15 +1,14 @@
-package cmd
+package rest
 
 import (
-	"ecommerce/handlers"
-	"ecommerce/middleware"
+	"ecommerce/rest/handlers"
+	"ecommerce/rest/middlewares"
 	"net/http"
 )
 
 func initRoutes(mux *http.ServeMux, manager *middleware.Manager) {
 	mux.Handle("GET /fumis", manager.With(
 		http.HandlerFunc(handlers.Test),
-		middleware.Third,
 	))
 
 	mux.Handle("GET /name", manager.With(
