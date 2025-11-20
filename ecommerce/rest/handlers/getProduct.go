@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-func GetProductsByID(w http.ResponseWriter, r *http.Request) {
-	productID := r.PathValue("productId")
+func GetProduct(w http.ResponseWriter, r *http.Request) {
+	productID := r.PathValue("id")
 
 	pId, err := strconv.Atoi(productID)
 	if err != nil {

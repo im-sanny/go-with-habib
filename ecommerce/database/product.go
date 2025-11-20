@@ -3,11 +3,11 @@ package database
 var productList []Product
 
 type Product struct {
-	ID          int
-	Title       string
-	Description string
-	Price       float64
-	ImgUrl      string
+	ID          int     `json:"id"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
+	ImgUrl      string  `json:"imageUrl"`
 }
 
 func Store(p Product) Product {
@@ -38,11 +38,11 @@ func Update(product Product) {
 }
 
 func Delete(productID int) {
-	var tempList []Product // [a, b]
+	var tempList []Product // [a, c]
 
-	for idx, p := range productList { // [a, b, c]
+	for _, p := range productList { // [a, b, c]
 		if p.ID != productID {
-			tempList[idx] = p
+			tempList = append(tempList, p)
 		}
 	}
 	productList = tempList
