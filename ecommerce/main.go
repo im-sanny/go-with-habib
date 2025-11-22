@@ -1,23 +1,9 @@
 package main
 
-import (
-	"ecommerce/cmd"
-)
+import "ecommerce/cmd"
 
 func main() {
-
 	cmd.Serve()
-	// jwt, err := util.CreateJwt("my_secret", util.Payload{
-	// 	Sub:         45,
-	// 	FirsName:    "Theo",
-	// 	LastName:    "Fumis",
-	// 	Email:       "hello@gmail.com",
-	// 	IsShopOwner: false,
-	// })
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Println(jwt)
 }
 
 /*
