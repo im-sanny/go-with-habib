@@ -50,4 +50,6 @@ HMAC-SHA256(secret_key, message) → outputs a 64-character hex string
 JWT (JSON Web Token): A standardized format for securely transmitting information between parties as a JSON object.
 Commonly used for authentication and session management in web apps. JWT has 3 parts as it's structure header.payload.signature.
 
+Tight coupling: Tight coupling means two pieces of code depend on each other too much, in a way that makes them hard to change, test, or reuse.
+
 */
