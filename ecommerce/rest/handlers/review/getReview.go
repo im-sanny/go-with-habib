@@ -1,7 +1,6 @@
 package review
 
 import (
-	"ecommerce/database"
 	"ecommerce/util"
 	"encoding/json"
 	"fmt"
