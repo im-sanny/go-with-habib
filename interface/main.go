@@ -94,4 +94,8 @@ func main() {
 	Signature:
 	- A function's name + its parameters + its return types.
 	- Does NOT include the body (actual code inside the function).
+
+	Constructor is a function that creates function.
+
+	explecit, 
 */
