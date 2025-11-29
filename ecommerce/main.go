@@ -52,4 +52,12 @@ Commonly used for authentication and session management in web apps. JWT has 3 p
 
 Tight coupling: Tight coupling means two pieces of code depend on each other too much, in a way that makes them hard to change, test, or reuse.
 
+go runtime stay in main stack or stack and go routines get's created in heap.
+
+go channel: to get rid of concurrency issue and solve conflict we use go channel and this helps us to access data from a variable and use it without any conflict, like 3 go routine access one data segment and they update it and that's why instead of getting the actual updated value the go routine gets what another one updates and this creates conflict and by using go channel we can fix this issue.
+
+go routine matters to save time to execute programs
+
+what is cache?
+
 */

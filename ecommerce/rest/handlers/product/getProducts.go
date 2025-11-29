@@ -2,9 +2,13 @@ package product
 
 import (
 	"ecommerce/util"
+	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 )
+
+var cnt int64
 
 func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	reqQuery := r.URL.Query()
@@ -28,11 +32,45 @@ func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 		util.SendError(w, http.StatusInternalServerError, "Internal server error")
 	}
 
-	cnt, err := h.svc.Count()
-	if err != nil {
-		util.SendError(w, http.StatusInternalServerError, "Internal server error")
-		return
-	}
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		cnt1, err := h.svc.Count()
+		if err != nil {
+			util.SendError(w, http.StatusInternalServerError, "Internal server error")
+			return
+		}
+		cnt = cnt1
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		cnt2, err := h.svc.Count()
+		if err != nil {
+			util.SendError(w, http.StatusInternalServerError, "Internal server error")
+			return
+		}
+		fmt.Println(cnt2)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		cnt3, err := h.svc.Count()
+		if err != nil {
+			util.SendError(w, http.StatusInternalServerError, "Internal server error")
+			return
+		}
+		fmt.Println(cnt3)
+	}()
+
+	wg.Wait()
 
 	util.SendPage(w, productList, page, limit, cnt)
 }

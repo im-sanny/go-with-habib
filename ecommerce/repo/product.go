@@ -94,11 +94,17 @@ func (r *productRepo) List(page, limit int64) ([]*domain.Product, error) {
 }
 
 func (r *productRepo) Count() (int64, error) {
-	query := `
-		SELECT
-			COUNT(*)
-		from products
+	// query := `
+	// 	SELECT
+	// 		COUNT(*)
+	// 	from products
+	// `
+	query := ` SELECT count(md5(title || description || img_url
+	|| random()::text))
+
+	FROM products;
 	`
+
 	var count int
 	err := r.db.QueryRow(query).Scan(&count)
 	if err != nil {
