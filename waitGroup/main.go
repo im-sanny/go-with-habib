@@ -30,42 +30,66 @@ func main() {
 }
 
 /*
+SYNC.WAITGROUP –
+• Purpose
+  WaitGroup lets the main goroutine (or any goroutine) wait until a group of goroutines finish.
 
-wg := WaitGroup{
-		noCopy: noCopy{}
-		state: atomic.Uint64{
-			_ : noCopy{}
-			_ : align64{}
-			v: 0
-			}
-			sema:0,
-		}
+ - What it does (super simple)
+   WaitGroup = "wait for many goroutines to finish".
+   Main goroutine says: "I pause here until all workers are done."
 
-- Waitgroup:
-		If you call Done() without calling Add() first, the WaitGroup will panic and crash the program.
+ - The 3 methods you use every day
+   wg.Add(n)   → "I will launch n goroutines"          (call BEFORE go func())
+   wg.Done()   → "one goroutine just finished"         (call at the end)
+   wg.Wait()   → "sleep until all are finished"
 
-		If the WaitGroup counter is set to 5 but only three Done() calls happen, the counter never reaches zero, so any goroutine waiting on it will block indefinitely.
+   Done() is exactly the same as Add(-1)
 
-		64 bit of states uint64 are divided in 2 part, they are high 32 bit and low 32 bit. high 32 bit also know as counter or unfinished worker counter/unfinished goroutine, this high32 bit keeps those who's yet to run or unfinished. after executing all the goroutine, say we had 3 programs in high32 and go routine executed them asynchronously, and when these are done the main go routine will call the wg.wait() in the last and it'll go check the high32 and if it sees the number is 0 then it won't stay stuck anymore and it'll move to next line of the code(if the high32 bit =0, this goroutine will not sleep)
+ - Golden rules (or panic/deadlock)
+   • Add() before starting the goroutine      (never after)
+   • Exactly one Done() per Add(1)
+   • Too many Done()      → panic
+   • Add(+) after Wait()  → panic
+   • Forget Done()        → Wait() waits forever (deadlock)
 
-- rightshift operator:
+	- If you call Done() without calling Add() first, the WaitGroup will panic and crash the program.
+	- If the WaitGroup counter is set to 5 but only three Done() calls happen, the counter never reaches zero, so any goroutine waiting on it will block indefinitely.
 
+ - Easy mental picture
+   There is one counter that says how many jobs are still running.
+   Add(5) → counter = 5
+   Every Done() → counter -= 1
+   Wait() → keeps looking until counter == 0, then continues.
 
-- deadlock: I am expecting some to give me something and waiting for that but that person will never give me the stuff and my waiting for that stuff is deadlock.
+	 A sync.WaitGroup keeps everything in one 64-bit number. The top (high) 32 bits are the only thing we care about — they hold the count of unfinished tasks (the counter). When you call wg.Add(3), it puts 3 in those high 32 bits. Each wg.Done() subtracts 1 from that same high part. When the main goroutine runs wg.Wait(), it simply checks those high 32 bits. If the number there is still bigger than 0, it goes to sleep. As soon as the last Done() makes those high 32 bits exactly 0, Wait() wakes up instantly and the program continues to the next line.
 
-	A sync.WaitGroup is used to wait for a collection of goroutines to finish. No API changes in Go 1.25.
+	 High 32 bits = unfinished jobs.
+	 High 32 bits == 0 → everything is done → keep going.
 
-- Three main methods:
-	- wg.Add(delta int)     → increase the counter (usually call before go func())
-	- wg.Done()             → decrease the counter by 1 (call just before goroutine ends)
-	- wg.Wait()             → blocks current goroutine until counter == 0
+ - Deadlock analogy
+   "I will pass you the ball only after you pass it to me.
+    You will pass it only after I pass it to you."
+   → Both wait forever → deadlock.
 
-- Important rules:
-	1. Add() must be called BEFORE starting the goroutine (otherwise race!)
-	2. Every Add(1) must have exactly one Done()
-	3. You can call Add(n) once for n goroutines instead of calling Add(1) n times
-	4. Done() is exactly the same as Add(-1)
-	5. Calling Add() with positive value after Wait() returns → panic
-	6. Calling Done() too many times → panic
+ - Inside the source – the 64-bit trick
+   One single uint64 holds everything:
 
+   bits 63–32 → counter        (unfinished tasks)   ← we care about this
+   bits 31–12 → waiter count   (how many goroutines are inside Wait())
+   bits 11–0  → tiny semaphore (used to wake up waiters)
+
+   That's why you see in the source:
+   counter := atomic.LoadUint64(&wg.state) >> 32   // throws away low 32 bits
+
+   When counter finally becomes 0, the runtime releases the tiny semaphore
+   and all sleeping Wait() calls wake up instantly.
+
+ - Right shift >> (one-line memory)
+   >> n = slide bits right n places → zeros fill from left → same as divide by 2ⁿ
+   Example: value >> 32 → drops the low 32 bits → gives the real counter
+
+ - Bonus facts
+   • You can Add(100) once instead of 100 times
+   • Never copy a WaitGroup (forbidden since Go 1.20+)
+   • No way to read the current counter from outside (on purpose)
 */
