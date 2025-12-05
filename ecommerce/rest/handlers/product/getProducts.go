@@ -1,15 +1,11 @@
 package product
 
 import (
+	"ecommerce/domain"
 	"ecommerce/util"
-	"fmt"
 	"net/http"
 	"strconv"
-	"sync"
 )
-
-var cnt int64
-var mu sync.Mutex
 
 func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	reqQuery := r.URL.Query()
@@ -28,51 +24,29 @@ func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
-	productList, err := h.svc.List(page, limit)
-	if err != nil {
-		util.SendError(w, http.StatusInternalServerError, "Internal server error")
-	}
-
-	var wg sync.WaitGroup
-
-	wg.Add(1)
+	prdCh := make(chan []*domain.Product)
 	go func() {
-		defer wg.Done()
-		mu.Lock()
-		defer mu.Unlock()
-		cnt1, err := h.svc.Count()
+		productList, err := h.svc.List(page, limit)
 		if err != nil {
 			util.SendError(w, http.StatusInternalServerError, "Internal server error")
 			return
 		}
-		cnt = cnt1
+
+		prdCh <- productList
 	}()
 
-	wg.Add(1)
+	ch := make(chan int64)
 	go func() {
-		defer wg.Done()
-
-		cnt2, err := h.svc.Count()
+		cnt, err := h.svc.Count()
 		if err != nil {
 			util.SendError(w, http.StatusInternalServerError, "Internal server error")
 			return
 		}
-		fmt.Println(cnt2)
+		ch <- cnt
 	}()
 
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
+	productList := <-prdCh
+	totalCount := <-ch
 
-		cnt3, err := h.svc.Count()
-		if err != nil {
-			util.SendError(w, http.StatusInternalServerError, "Internal server error")
-			return
-		}
-		fmt.Println(cnt3)
-	}()
-
-	wg.Wait()
-
-	util.SendPage(w, productList, page, limit, cnt)
+	util.SendPage(w, productList, page, limit, totalCount)
 }
